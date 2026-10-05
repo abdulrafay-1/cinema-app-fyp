@@ -1,3 +1,2 @@
 .playwright-mcp/
-includes/secrets.php
 Admin/upload-images/tmdb_*

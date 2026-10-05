@@ -38,7 +38,7 @@ Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
 The movie catalog comes from TMDB. Each developer seeds their own database:
 
 1. Get a free key at https://www.themoviedb.org/settings/api (either the "API Key" or the "API Read Access Token" works).
-2. `cp includes/secrets.example.php includes/secrets.php` and paste the key between the quotes. `secrets.php` is git-ignored, so never commit the key or paste it anywhere else.
+2. The key is already committed in `includes/secrets.php` (the repo is **private**, that's the only reason this is OK). Never make the repo public while it's there: if that ever has to happen, delete the file from the repo and regenerate the key on TMDB first.
 3. Apply migration 005, back up, then run the seeder:
    ```
    docker compose exec -T db mysql -uroot dbmo < database/migrations/005_rafay_tmdb.sql

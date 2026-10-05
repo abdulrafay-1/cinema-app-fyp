@@ -35,7 +35,7 @@ Two separate apps sharing one database:
 - Two developers; file ownership and cross-owner change requests live in `TEAM_NOTES.md`. Don't edit files owned by the other person, add a request there instead.
 - Schema changes go in `database/migrations/00X_*.sql` (re-runnable, MariaDB `IF NOT EXISTS`), applied with `docker compose exec -T db mysql -uroot dbmo < database/migrations/<file>`. `dbmo.sql` is the untouched original dump. Shared table/column rules: `database/SCHEMA_CONTRACT.md`.
 - New code uses `includes/functions.php` (`db_query`/`db_one`/`db_all` prepared-statement wrappers, `e()`, `current_user_id()`, `money()`, `flash()`, `redirect()`; sets Asia/Karachi time zone for PHP and MySQL) and `includes/admin_functions.php` (`log_activity()`). Admin pages gate with `include('auth.php');` before any output.
-- Movie catalog comes from TMDB via `database/seed_tmdb.php` (CLI only, `--yes` wipes catalog + bookings and reseeds; see TEAM_NOTES "TMDB catalog"). Key lives in git-ignored `includes/secrets.php` (or env `TMDB_API_KEY`); `includes/tmdb.php` is the HTTP client. Downloaded images are `Admin/upload-images/tmdb_*` (git-ignored).
+- Movie catalog comes from TMDB via `database/seed_tmdb.php` (CLI only, `--yes` wipes catalog + bookings and reseeds; see TEAM_NOTES "TMDB catalog"). Key lives in `includes/secrets.php`, committed on purpose because the repo is private (env `TMDB_API_KEY` overrides it); never make the repo public with it in history; `includes/tmdb.php` is the HTTP client. Downloaded images are `Admin/upload-images/tmdb_*` (git-ignored).
 - Git Bash on this machine rewrites `/var/www/...` paths passed to `docker compose exec`; prefix with `MSYS_NO_PATHCONV=1`.
 
 ## Things to know before changing code
