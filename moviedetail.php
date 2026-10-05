@@ -150,13 +150,17 @@ include('header.php');
 
 <!-- movie trailer: ratio-16x9 keeps it 16:9 on every screen size -->
 
-    <section>
+    <section id="trailer">
 
           <div class="container">
 
-                <div class="ratio ratio-16x9" style="box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);">
+                <?php if (!empty($movie_details['movie_trl_url'])) { ?>
+                <div class="ratio ratio-16x9" style="box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);border-radius:16px;overflow:hidden;">
                       <iframe src="<?php echo  e($movie_details['movie_trl_url']); ?>?autoplay=1" title="<?php echo e($movie_details['movie_name']); ?> trailer" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                 </div>
+                <?php } else if (!empty($movie_details['backdrop'])) { ?>
+                <img src="Admin/upload-images/<?php echo e($movie_details['backdrop']); ?>" alt="<?php echo e($movie_details['movie_name']); ?>" style="width:100%;border-radius:16px;box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);">
+                <?php } ?>
 
           </div>
 
@@ -165,90 +169,92 @@ include('header.php');
 
 
 
-<!-- movie accordion -->
-
-<div class="container mt-4">
-
-<div class="accordion accordion-flush" id="accordionFlushExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="flush-headingOne">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-      SYNOPSIS:
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-            <?php
-            // description is set by the admin on Add / Edit Movie
-            if(!empty($movie_details['description'])){
-                echo nl2br(e($movie_details['description']));
-            }
-            else{
-                echo "<b>".e($movie_details['movie_name'])."</b> is now showing in cinemas.";
-            }
-            ?>
+<?php
+require_once __DIR__ . '/includes/booking.php';
+echo booking_css();
+$md = db_one(
+    "select g.genre_name, i.industry_name, l.language_name
+     from addmovie m
+     left join genre g on g.gen_id=m.movie_genre_id
+     left join industry i on i.indus_id=m.movie_indus_id
+     left join language l on l.lang_id=m.movie_lang_id
+     where m.movie_id=?",
+    'i',
+    [$mov_det_id]
+);
+$md_runtime = (int) ($movie_details['runtime'] ?? 0);
+$md_runtime_text = $md_runtime ? intdiv($md_runtime, 60) . 'h ' . ($md_runtime % 60) . 'm' : '';
+$md_release = !empty($movie_details['release_date']) ? strtotime($movie_details['release_date']) : null;
+$md_tmdb = (float) ($movie_details['rating'] ?? 0);
+$md_chips = array_filter([
+    $md['genre_name'] ?? null,
+    $md['language_name'] ?? null,
+    $md['industry_name'] ?? null,
+    $md_release ? date('Y', $md_release) : null,
+    $md_runtime_text ?: null,
+]);
+?>
+<style>
+  .md-card { background: #28282d; border-radius: 16px; padding: 28px; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); border: 1px solid rgba(255, 255, 255, .06); }
+  .md-poster { width: 100%; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .5); display: block; }
+  .md-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .md-chip { padding: 5px 14px; border-radius: 999px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .85); font-size: 13px; }
+  .md-chip:first-child { background: linear-gradient(90deg, #ff55a5, #ff5860); border-color: transparent; color: #fff; font-weight: 600; }
+  .md-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #ff55a5; font-weight: 700; margin-bottom: 8px; }
+  .md-synopsis { color: rgba(255, 255, 255, .78); font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
+  .md-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .md-stat { background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .07); border-radius: 12px; padding: 14px 16px; }
+  .md-stat small { display: block; color: rgba(255, 255, 255, .5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .md-stat strong { color: #fff; font-size: 20px; font-weight: 700; }
+  .md-stat strong .fa-star { color: #f5c542; font-size: 16px; }
+  .md-stat span { color: rgba(255, 255, 255, .5); font-size: 13px; }
+  .md-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 991px) { .md-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 767px) { .md-card { padding: 18px; } .md-poster { max-width: 200px; margin: 0 auto; } }
+</style>
+<section class="container mt-4" id="details">
+  <div class="md-card">
+    <div class="row g-4 align-items-start">
+      <div class="col-12 col-md-4 col-lg-3">
+        <img class="md-poster" src="Admin/upload-images/<?php echo e($movie_details['movie_img']); ?>" alt="<?php echo e($movie_details['movie_name']); ?> poster">
+      </div>
+      <div class="col-12 col-md-8 col-lg-9">
+        <?php if ($md_chips): ?>
+          <div class="md-chips">
+            <?php foreach ($md_chips as $md_chip): ?><span class="md-chip"><?php echo e(trim($md_chip)); ?></span><?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+        <div class="md-label">Synopsis</div>
+        <p class="md-synopsis"><?php echo !empty($movie_details['description']) ? nl2br(e($movie_details['description'])) : e($movie_details['movie_name']) . ' is now showing in cinemas.'; ?></p>
+        <div class="md-stats">
+          <div class="md-stat">
+            <small>TMDB rating</small>
+            <strong><?php echo $md_tmdb > 0 ? '<i class="fa fa-star"></i> ' . e(number_format($md_tmdb, 1)) . '</strong> <span>/ 10</span>' : '-</strong>'; ?>
+          </div>
+          <div class="md-stat">
+            <small>Audience</small>
+            <strong><?php echo $review_total ? '<i class="fa fa-star"></i> ' . e(number_format($review_average, 1)) . '</strong> <span>/ 5 &middot; ' . $review_total . '</span>' : '-</strong> <span>No reviews yet</span>'; ?>
+          </div>
+          <div class="md-stat">
+            <small>Runtime</small>
+            <strong><?php echo $md_runtime_text ? e($md_runtime_text) : '-'; ?></strong>
+          </div>
+          <div class="md-stat">
+            <small>Release</small>
+            <strong style="font-size:17px;"><?php echo $md_release ? e(date('d M Y', $md_release)) : '-'; ?></strong>
+          </div>
+        </div>
+        <div class="md-actions">
+          <a class="cx-btn" href="select_show.php?movie_id=<?php echo (int) $movie_details['movie_id']; ?>"><i class="fa fa-ticket-alt"></i> Book Tickets</a>
+          <?php if (!empty($movie_details['movie_trl_url'])): ?>
+            <a class="cx-btn cx-btn-ghost" href="#trailer"><i class="fa fa-play"></i> Watch Trailer</a>
+          <?php endif; ?>
+          <a class="cx-btn cx-btn-ghost" href="#reviews"><i class="fa fa-comment"></i> Reviews</a>
+        </div>
       </div>
     </div>
   </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="flush-headingTwo">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-        SHOWS:
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-      <span>Cinema :
-            <?php
-            $cin_data=db_one("select cinema_name from cinema where cin_id=?", 'i', [$movie_details['movie_cin_id']]);
-            echo $cin_data ? e($cin_data['cinema_name']) : '-';
-            ?>
-            </span><hr>
-            <span>Show-Times :
-            <?php
-      	echo e($movie_details['movie_duration']);
-            ?>
-            </span><hr>
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="flush-headingThree">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-        OTHER DETAILS:
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">
-            <span>Ratings :
-            <?php echo $review_total ? e(number_format($review_average,1)).' / 5 from '.$review_total.' review'.($review_total===1 ? '' : 's') : 'No ratings yet'; ?>
-            </span><br><hr>
-            <span>Genre :
-            <?php
-            $genre_data=db_one("select genre_name from genre where gen_id=?", 'i', [$movie_details['movie_genre_id']]);
-            echo $genre_data ? e($genre_data['genre_name']) : '-';
-            ?>
-            </span><br><hr>
-            <span>Industry :
-            <?php
-                   $indus_data=db_one("select industry_name from industry where indus_id=?", 'i', [$movie_details['movie_indus_id']]);
-                   echo $indus_data ? e($indus_data['industry_name']) : '-';
-            ?>
-            </span><br><hr>
-            <span>Language :
-                  <?php
-                  $lang_data=db_one("select language_name from language where lang_id=?", 'i', [$movie_details['movie_lang_id']]);
-                  echo $lang_data ? e($lang_data['language_name']) : '-';
-                  ?>
-            </span><br><hr>
-      </div>
-    </div>
-  </div>
-</div>
-
-</div>
-
-<!-- movie accordion -->
+</section>
 
 
 

@@ -129,7 +129,7 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 
 12. **Heads-up, Rafay edited `Admin/admin_header.php`** (on request): the sidebar avatar photo is replaced by a generic icon (your logged-in-email name line was kept), and `Admin/img/admin.jpg` was deleted. Pull before editing that file.
 
-14. **moviedetail.php trailer:** movies without a TMDB trailer have an empty `movie_trl_url`, and the iframe then loads `?autoplay=1`, which is the site itself. Wrap the trailer iframe in `<?php if ($movie_details['movie_trl_url']): ?> ... <?php endif; ?>`.
+14. **Done by Rafay (on request), `moviedetail.php`:** the SYNOPSIS / SHOWS / OTHER DETAILS accordion is replaced by an always-visible details card (poster, genre/language/industry/year/runtime chips, synopsis, TMDB rating, audience rating, runtime, release date, Book / Trailer / Reviews buttons). The trailer iframe only renders when `movie_trl_url` is set, otherwise the backdrop is shown. The old SHOWS panel was dropped because Upcoming Shows below covers it. Pull before editing that file.
 15. **Sample reviews (migration 004)** pointed at the old movies, so the TMDB seeder deletes them. Re-add sample reviews for TMDB titles if you want the Reviews page populated (match by `movie_name` after seeding).
 
 ### For Rafay
