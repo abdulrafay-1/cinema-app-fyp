@@ -8,6 +8,12 @@ if (session_status() === PHP_SESSION_NONE) {
 date_default_timezone_set('Asia/Karachi');
 mysqli_set_charset($con, 'utf8mb4');
 mysqli_query($con, "SET time_zone = '+05:00'");
+$GLOBALS['app_db'] = $con;
+
+function db()
+{
+    return $GLOBALS['app_db'];
+}
 
 function e($value)
 {
@@ -16,8 +22,7 @@ function e($value)
 
 function db_query($sql, $types = '', $params = [])
 {
-    global $con;
-    $stmt = mysqli_prepare($con, $sql);
+    $stmt = mysqli_prepare(db(), $sql);
     if (!$stmt) {
         return false;
     }
@@ -87,9 +92,9 @@ function render_flash()
     }
     $html = '';
     foreach ($_SESSION['flash'] as $item) {
-        $html .= '<div class="alert alert-' . e($item['type']) . ' alert-dismissible fade show" role="alert">'
+        $html .= '<div class="alert alert-' . e($item['type']) . '" role="alert">'
             . e($item['message'])
-            . '<button type="button" class="btn-close" data-bs-dismiss="alert" data-dismiss="alert" aria-label="Close"></button></div>';
+            . '</div>';
     }
     unset($_SESSION['flash']);
     return $html;
@@ -102,5 +107,21 @@ function redirect($url)
     } else {
         echo '<script>window.location.assign(' . json_encode($url) . ')</script>';
     }
+    exit;
+}
+
+function require_login()
+{
+    if (!current_user_id()) {
+        $_SESSION['after_login'] = $_SERVER['REQUEST_URI'];
+        redirect('signin.php');
+    }
+}
+
+function json_out($data, $code = 200)
+{
+    http_response_code($code);
+    header('Content-Type: application/json');
+    echo json_encode($data);
     exit;
 }

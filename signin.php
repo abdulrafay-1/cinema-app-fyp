@@ -73,9 +73,15 @@ elseif($fetch_ux_login_check){
 
 
 
-	echo 
+	$after_login=isset($_SESSION['after_login']) ? $_SESSION['after_login'] : '';
+	unset($_SESSION['after_login']);
+	if(!preg_match('#^/[^/\\\\]#',$after_login)){
+		$after_login='index.php';
+	}
+
+	echo
 	"
-	<script>window.location.assign('index.php')</script>
+	<script>window.location.assign(".json_encode($after_login).")</script>
 	";
 
 }

@@ -2,7 +2,7 @@
 
 ## File ownership
 
-**Rafay (core):** `book_ticket.php`, `userbooking.php`, `signin.php`, `index.php`, `hollywood.php`, `bollywood.php`, `lollywood.php`, `select_show.php`, `seat_map.php`, `checkout.php`, `payment.php`, `booking_success.php`, `ticket.php`, `cancel_booking.php`, `ajax/*`, `partials/*`, `includes/*`, `database/*`, `Admin/auth.php`, `Admin/dashboard.php`, `Admin/booking.php`, `Admin/refunds.php`, `Admin/scan_ticket.php`, `Admin/shows.php`, `Admin/reports.php`.
+**Rafay (core):** `book_ticket.php`, `userbooking.php`, `signin.php`, `index.php`, `hollywood.php`, `bollywood.php`, `lollywood.php`, `select_show.php`, `seat_map.php`, `checkout.php`, `payment.php`, `booking_success.php`, `ticket.php`, `cancel_booking.php`, `ajax/*`, `partials/*`, `includes/*`, `database/*`, `assets/*`, `Admin/auth.php`, `Admin/dashboard.php`, `Admin/booking.php`, `Admin/refunds.php`, `Admin/scan_ticket.php`, `Admin/shows.php`, `Admin/reports.php`.
 
 **Umair:** everything else, including `moviedetail.php`, `header.php`, `footer.php`, `about.php`, `faq.php`, `signup.php`, `profile.php`, `favorites.php`, `contact.php`, `Admin/admin_header.php` and the other `/Admin` pages.
 
@@ -78,7 +78,18 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 4. **`header.php` line 2:** change `session_start();` to `if (session_status() === PHP_SESSION_NONE) { session_start(); }`. New pages start the session before including the header, and on XAMPP the unguarded call prints a notice.
 5. **`Admin/price_edit.php` line 88:** the UPDATE has no `WHERE`, so editing one movie's prices overwrites **every** row. Add `where price_id='$movie_price_edit_id'`.
 6. **Deleting movies/cinemas:** `shows` has foreign keys to `addmovie` and `cinema`, so deleting one that has shows fails. Show a message like "Delete this movie's shows first".
-7. **moviedetail.php:** the include line for the upcoming-shows block comes with Phase 1.
+7. **moviedetail.php: upcoming shows block.** Paste this just above the `<!-- book movie btn -->` section:
+   ```php
+   <?php $show_list_movie_id = $movie_details['movie_id']; include('partials/show_list.php'); ?>
+   ```
+   Also point the "Book Tickets" button to `select_show.php?movie_id=<?php echo $movie_details['movie_id']; ?>` (the old `book_ticket.php` link will redirect there after Phase 2 anyway).
+8. **Admin/admin_header.php sidebar:** please add these links (pages already exist or are coming):
+   ```html
+   <li><a href="shows.php"> <i class="fa fa-film"></i>Shows </a></li>
+   <li><a href="refunds.php"> <i class="fa fa-undo"></i>Refunds </a></li>
+   <li><a href="scan_ticket.php"> <i class="fa fa-qrcode"></i>Scan Ticket </a></li>
+   <li><a href="reports.php"> <i class="fa fa-bar-chart"></i>Reports </a></li>
+   ```
 
 ### For Rafay
 (none yet)
