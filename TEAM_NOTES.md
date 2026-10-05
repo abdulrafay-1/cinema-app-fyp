@@ -129,6 +129,8 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 
 12. **Heads-up, Rafay edited `Admin/admin_header.php`** (on request): the sidebar avatar photo is replaced by a generic icon (your logged-in-email name line was kept), and `Admin/img/admin.jpg` was deleted. Pull before editing that file.
 
+13. **Heads-up, Rafay redesigned `Admin/login.php`** (on request): split card in the site theme (brand panel with a TMDB backdrop + form), fixed labels above icon inputs instead of the template's floating labels (which overlapped on autofill), show/hide password, inline error message, Back to website link. Login now runs before any output with a prepared statement and a header redirect; already-logged-in admins go straight to the dashboard. It no longer uses `admin_alert.php`, `front.js` or the template's form-validate. Pull before editing that file.
+
 14. **Done by Rafay (on request), `moviedetail.php`:** the SYNOPSIS / SHOWS / OTHER DETAILS accordion is replaced by an always-visible details card (poster, genre/language/industry/year/runtime chips, synopsis, TMDB rating, audience rating, runtime, release date, Book / Trailer / Reviews buttons). The trailer iframe only renders when `movie_trl_url` is set, otherwise the backdrop is shown. The old SHOWS panel was dropped because Upcoming Shows below covers it. Pull before editing that file.
 15. **Sample reviews (migration 004)** pointed at the old movies, so the TMDB seeder deletes them. Re-add sample reviews for TMDB titles if you want the Reviews page populated (match by `movie_name` after seeding).
 

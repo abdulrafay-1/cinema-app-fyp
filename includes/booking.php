@@ -43,7 +43,7 @@ function show_date_label($date)
 function get_show($show_id)
 {
     return db_one(
-        "SELECT s.*, m.movie_name, m.movie_img, m.description, c.cinema_name, c.cinema_location,
+        "SELECT s.*, m.movie_name, m.movie_img, m.backdrop, m.description, c.cinema_name, c.cinema_location,
                 TIMESTAMP(s.show_date, s.show_time) AS starts_at,
                 TIMESTAMP(s.show_date, s.show_time) > NOW() AS is_upcoming
          FROM shows s
