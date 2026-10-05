@@ -1,16 +1,17 @@
 <?php
+require_once __DIR__ . '/includes/functions.php';
+
+// getting specific movie id
+$mov_det_id=isset($_GET['movdet']) ? $_GET['movdet'] : '';
+
+$movie_details=db_one("select * from addmovie where movie_id=?", 'i', [$mov_det_id]);
+
+// unknown or missing id: go back to the home page instead of showing an empty page
+if(!$movie_details){
+    redirect('index.php');
+}
+
 include('header.php');
-?>
-
-<?php
-
-// getting specific movie id 
-$mov_det_id=$_GET['movdet'];
-
-
-$fetch_mov_det=mysqli_query($con,"select * from addmovie where movie_id='$mov_det_id'");
-$movie_details=mysqli_fetch_assoc($fetch_mov_det);
-
 ?>
 
 <!-- movie details -->
@@ -23,7 +24,7 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
               <div class="container" style="margin-top:120px;">
                          <h2 class="mb-4 display-3" style="color:white;text-transform:uppercase;text-align:center;">
 
-                               <?php echo "📽 &nbsp;".$movie_details['movie_name']; ?>
+                               <?php echo "📽 &nbsp;".e($movie_details['movie_name']); ?>
                          </h2>
              </div>
     </section>
@@ -38,7 +39,7 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
 
           <div class="container">
 
-                <iframe width="1140" height="641" src="<?php echo  $movie_details['movie_trl_url']; ?>?autoplay=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);"></iframe>   
+                <iframe width="1140" height="641" src="<?php echo  e($movie_details['movie_trl_url']); ?>?autoplay=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);"></iframe>   
 
           </div>
 
@@ -59,7 +60,17 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
       </button>
     </h2>
     <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">Actors in <?php echo "<b>".$movie_details['movie_name']."</b>"; ?> Scott Lang and Hope Van Dyne, along with Hank Pym and Janet Van Dyne, explore the Quantum Realm, where they interact with strange creatures and embark on an adventure that goes beyond the limits of what they thought was possible.</div>
+      <div class="accordion-body">
+            <?php
+            // description is set by the admin on Add / Edit Movie
+            if(!empty($movie_details['description'])){
+                echo nl2br(e($movie_details['description']));
+            }
+            else{
+                echo "<b>".e($movie_details['movie_name'])."</b> is now showing in cinemas.";
+            }
+            ?>
+      </div>
     </div>
   </div>
   <div class="accordion-item">
@@ -73,9 +84,8 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
       <span>Cinema :
             <?php 
                                          	
-            $cin_res=mysqli_query($con,"select cinema_name from cinema where cin_id='$movie_details[movie_cin_id]'");
-            $cin_data=mysqli_fetch_assoc($cin_res);
-            echo $cin_data['cinema_name'];
+            $cin_data=db_one("select cinema_name from cinema where cin_id=?", 'i', [$movie_details['movie_cin_id']]);
+            echo $cin_data ? e($cin_data['cinema_name']) : '-';
                                          	
                                          	
             ?>
@@ -83,7 +93,7 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
             <span>Show-Times :
             <?php 
                                          	
-      	echo $movie_details['movie_duration'];
+      	echo e($movie_details['movie_duration']);
                                          	
                                          	
             ?>
@@ -109,24 +119,21 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
             <span>Genre : 
             <?php 
 
-            $genre_res=mysqli_query($con,"select genre_name from genre where gen_id='$movie_details[movie_genre_id]'");
-            $genre_data=mysqli_fetch_assoc($genre_res);
-            echo $genre_data['genre_name'];
+            $genre_data=db_one("select genre_name from genre where gen_id=?", 'i', [$movie_details['movie_genre_id']]);
+            echo $genre_data ? e($genre_data['genre_name']) : '-';
 
             ?>
             </span><br><hr>
             <span>Industry :
             <?php
-                   $indus_res=mysqli_query($con,"select industry_name from industry where indus_id='$movie_details[movie_indus_id]'");
-                   $indus_data=mysqli_fetch_assoc($indus_res);
-                   echo $indus_data['industry_name'];
+                   $indus_data=db_one("select industry_name from industry where indus_id=?", 'i', [$movie_details['movie_indus_id']]);
+                   echo $indus_data ? e($indus_data['industry_name']) : '-';
             ?>
             </span><br><hr>
             <span>Language :
                   <?php 
-                  $lang_res=mysqli_query($con,"select language_name from language where lang_id='$movie_details[movie_lang_id]'");
-                  $lang_data=mysqli_fetch_assoc($lang_res);
-                  echo $lang_data['language_name'];
+                  $lang_data=db_one("select language_name from language where lang_id=?", 'i', [$movie_details['movie_lang_id']]);
+                  echo $lang_data ? e($lang_data['language_name']) : '-';
                   ?>
             </span><br><hr>
       </div>
@@ -142,10 +149,13 @@ $movie_details=mysqli_fetch_assoc($fetch_mov_det);
 
 
 
+<!-- upcoming shows (Rafay's partial); file_exists keeps this page working if the partial is ever missing -->
+<?php if (file_exists(__DIR__ . '/partials/show_list.php')) { $show_list_movie_id = $movie_details['movie_id']; include('partials/show_list.php'); } ?>
+
 <!-- book movie btn -->
 <hr style="color:white;">
 <center>
-<a href="book_ticket.php?movbook=<?php echo $movie_details['movie_id'];?>" class="header__sign-in">
+<a href="select_show.php?movie_id=<?php echo (int) $movie_details['movie_id']; ?>" class="header__sign-in">
       <i class="icon ion-ios-log-in"></i>
       <span>Book Tickets</span>
 </a>

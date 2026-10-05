@@ -2,6 +2,10 @@
 include('config.php');
 // gives every admin page e(), db_query() and log_activity()
 require_once __DIR__ . '/../includes/admin_functions.php';
+
+// unread contact messages, shown as a badge next to "Messages" in the sidebar
+$admin_unread_row = db_one('SELECT COUNT(*) AS n FROM contact_messages WHERE is_read = 0');
+$admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
 ?>
 
 
@@ -91,7 +95,7 @@ require_once __DIR__ . '/../includes/admin_functions.php';
                 <li><a href="snacks.php"> <i class="fa fa-cutlery"></i>Snacks </a></li>
                 <li><a href="promo_codes.php"> <i class="fa fa-tags"></i>Promo Codes </a></li>
                 <li><a href="reviews.php"> <i class="fa fa-star"></i>Reviews </a></li>
-                <li><a href="messages.php"> <i class="fa fa-envelope"></i>Messages </a></li>
+                <li><a href="messages.php"> <i class="fa fa-envelope"></i>Messages <?php if ($admin_unread_messages > 0) { ?><span class="badge badge-danger ml-1"><?php echo $admin_unread_messages; ?></span><?php } ?></a></li>
                 <li><a href="coming_soon.php"> <i class="fa fa-clock-o"></i>Coming Soon </a></li>
                 <li><a href="activity_log.php"> <i class="fa fa-history"></i>Activity Log </a></li>
         </ul>

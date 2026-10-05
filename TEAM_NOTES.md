@@ -27,6 +27,7 @@ Seed shows are created relative to the day you run the migration (next 7 days). 
 | 001_shared_schema.sql | Rafay | new columns on booking_details / user_reg_login / addmovie, all new tables, seed data |
 | 002_rafay_refund_reason.sql | Rafay | `booking_details.refund_reason`, `refund_processed_at` (admin refund decisions) |
 | 003_rafay_admin_email.sql | Rafay | seed admin login renamed to `admin@gmail.com` (password unchanged: `12345`). Safe to re-run; re-run it if you applied it before 7 Oct |
+| 004_umair_sample_data.sql | Umair | demo data only: 3 reviews by the Demo user (one Hidden) and 2 contact messages (one unread). No schema change |
 
 Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
 
@@ -70,6 +71,7 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
    ```php
    $ux_insert=mysqli_query($con,"insert into user_reg_login (name,email,password) values('$ux_name','$ux_email','$ux_pass')");
    ```
+   **Done (Umair Task 2):** column-list insert (prepared statement), plus duplicate-email check, email format check and inline error messages.
 2. **`Admin/addmovie.php` line 178**: Add Movie is broken. Replace with:
    ```php
    $insert=mysqli_query($con,"insert into addmovie (movie_name,movie_cin_id,movie_genre_id,movie_indus_id,movie_lang_id,movie_date_id,movie_img,movie_trl_url,movie_duration) values('$mov_name','$mov_cinema','$mov_genre','$mov_industry','$mov_lang','$mov_date','$mov_image','$mov_trl_url','$mov_dur')");
@@ -81,6 +83,7 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 3. **Admin auth:** only `dashboard.php` and `booking.php` check the admin login right now. Every other admin page and every `*_del.php` handler can be opened without logging in. Add `include('auth.php');` as the first line of each.
    **Done (Umair Task 1)** for all of Umair's admin pages and `*_del.php` handlers.
 4. **`header.php` line 2:** change `session_start();` to `if (session_status() === PHP_SESSION_NONE) { session_start(); }`. New pages start the session before including the header, and on XAMPP the unguarded call prints a notice.
+   **Done (Umair Task 2).**
 5. **`Admin/price_edit.php` line 88:** the UPDATE has no `WHERE`, so editing one movie's prices overwrites **every** row. Add `where price_id='$movie_price_edit_id'`.
    **Done (Umair Task 1).**
 6. **Deleting movies/cinemas:** `shows` has foreign keys to `addmovie` and `cinema`, so deleting one that has shows fails. Show a message like "Delete this movie's shows first".
@@ -90,6 +93,7 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
    <?php $show_list_movie_id = $movie_details['movie_id']; include('partials/show_list.php'); ?>
    ```
    Also point the "Book Tickets" button to `select_show.php?movie_id=<?php echo $movie_details['movie_id']; ?>` (the old `book_ticket.php` link will redirect there after Phase 2 anyway).
+   **Done (Umair Task 2):** the include is wrapped in `file_exists()`; "Select Seats" opens `seat_map.php`. The synopsis now shows `addmovie.description` instead of the template's Ant-Man text.
 8. **Admin/admin_header.php sidebar:** please add these links (pages already exist or are coming):
    ```html
    <li><a href="shows.php"> <i class="fa fa-film"></i>Shows </a></li>
@@ -100,9 +104,12 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
    **Done (Umair Task 1)**, under a "Shows & Tickets" heading.
 
 9. **footer.php:** `img/google-play-badge.png` is referenced but missing, so every page logs a 404 in the console. Remove the badge or add the image.
+   **Done (Umair Task 2):** Google Play badge removed, the App Store badge stays.
 10. **Font Awesome:** header.php loads both FA 4.7 and FA 5.15. The FA5 sheet wins, so FA4-only names (`fa-pencil`, `fa-ticket`, `fa-video-camera`, `fa-clock-o`) render blank on public pages. Use FA5 names (`fa-pencil-alt`, `fa-ticket-alt`, `fa-video`, `fa-clock`).
+   **Done (Umair Task 2):** Umair's public files only use `fa-star` (valid in FA5). header.php now drops the unused FA 4.7 sheet and loads FA5's official `v4-shims.min.css`, so any FA4 name (`fa fa-pencil`, `fa fa-clock-o`, ...) still shows an icon on every public page.
 
 11. **Admin/admin_footer.php:** it loads `js/charts-home.js` on every admin page. That file draws the template's fake demo charts on canvas ids that no page has any more, so each admin page logs ~10 "Failed to create chart" console errors. Please remove that `<script>` line. `dashboard.php` draws its own charts with the same Chart.js.
+   **Done (Umair Task 2).**
 
 12. **Heads-up, Rafay edited `Admin/admin_header.php`** (on request): the sidebar avatar photo is replaced by a generic icon (your logged-in-email name line was kept), and `Admin/img/admin.jpg` was deleted. Pull before editing that file.
 
@@ -111,3 +118,9 @@ No changes needed, just FYI from Umair Task 1:
 - `Admin/admin_header.php` now does `require_once __DIR__ . '/../includes/admin_functions.php';`, so every admin page that includes the header gets `e()`, `db_query()` and `log_activity()`. Your own `require_once` lines still work.
 - The sidebar now has a "Shows & Tickets" group: Shows, Scan Ticket, Refunds, Reports.
 - `activity_log` now gets rows for add/edit/delete on cinema, genre, industry, language, date, seat prices and movies.
+
+From Umair Task 2 (FYI, nothing broken found):
+- Tested sign up → sign in → movie page → Select Seats → seat map; all worked.
+- New admin pages: snacks, promo_codes, coming_soon, reviews, messages, activity_log, and a rewritten user.php (Block/Unblock, View). They write to `snacks`, `promo_codes` and `coming_soon`, which your checkout and home page read: inactive snacks / promo codes disappear from checkout, and promo codes are saved in UPPER CASE to match `find_promo()`. A snack that appears in `booking_snacks` can't be deleted (your ticket and booking pages join on it); the admin is told to deactivate it instead.
+- Snack images and coming-soon posters are saved in `Admin/upload-images/` with random names (`Admin/admin_upload.php`).
+- Optional, later: passwords are still stored and compared in plain text. If you want hashing, `signin.php` would need `password_verify()` and `signup.php` would use `password_hash()`; tell me and I'll change signup at the same time.

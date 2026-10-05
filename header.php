@@ -1,5 +1,8 @@
-<?php 
-session_start();
+<?php
+// some pages (seat map, checkout) start the session before including the header
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
 include('config.php');
 
 
@@ -26,9 +29,11 @@ include('config.php');
 	<link rel="stylesheet" href="css/photoswipe.css">
 	<link rel="stylesheet" href="css/default-skin.css">
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Font Awesome 5, plus the v4 shim so old FA4 names (fa-pencil, fa-ticket, fa-clock-o) still show an icon -->
 	<link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/v4-shims.min.css">
+
 
 	<!-- Favicons -->
      <link rel="shortcut icon" href="icon/favi.png" type="image/x-icon">
