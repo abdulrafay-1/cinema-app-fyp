@@ -106,5 +106,5 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 ### For Rafay
 No changes needed, just FYI from Umair Task 1:
 - `Admin/admin_header.php` now does `require_once __DIR__ . '/../includes/admin_functions.php';`, so every admin page that includes the header gets `e()`, `db_query()` and `log_activity()`. Your own `require_once` lines still work.
-- The sidebar links to `refunds.php` and `reports.php`; they 404 until those pages exist.
+- The sidebar now has a "Shows & Tickets" group: Shows, Scan Ticket, Refunds, Reports.
 - `activity_log` now gets rows for add/edit/delete on cinema, genre, industry, language, date, seat prices and movies.
