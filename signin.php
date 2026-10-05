@@ -50,21 +50,25 @@ $ux_login_email=$_POST['email'];
 $ux_login_password=$_POST['password'];
 
 
+require_once __DIR__ . '/includes/functions.php';
+
 // fetching user data from database for login check "select query"
-$select_query=mysqli_query($con,"select name,email,password from user_reg_login where email='$ux_login_email' and password='$ux_login_password'");
-
-
-// fetching user data from data base 
-$fetch_ux_login_check=mysqli_fetch_assoc($select_query);
+// fetching user data from data base
+$fetch_ux_login_check=db_one("select id,name,email,status from user_reg_login where email=? and password=? limit 1", 'ss', [$ux_login_email, $ux_login_password]);
 
 
 // if else condition for user for $session
-// using mysqli_num_rows() function for checking does select query worked or not
-if(mysqli_num_rows($select_query)>0){
+if($fetch_ux_login_check && $fetch_ux_login_check["status"]==='Blocked'){
 
-// creating session for logout 
+	echo '<script>alert("Your account has been blocked. Please contact support for help.")</script>';
+
+}
+elseif($fetch_ux_login_check){
+
+// creating session for logout
 	$_SESSION["ux"]=$fetch_ux_login_check["name"];
 	$_SESSION["ux_email"]=$fetch_ux_login_check["email"];
+	$_SESSION["ux_id"]=(int)$fetch_ux_login_check["id"];
 
 
 

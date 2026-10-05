@@ -1,15 +1,6 @@
 <?php
-session_start();
 // session for admin
-if(!$_SESSION['admin']){
- 
-  echo 
-	"
-	<script>window.location.assign('login.php')</script>
-	";
-  
-  
- }
+include('auth.php');
  // session for admin
 include('admin_header.php');
 

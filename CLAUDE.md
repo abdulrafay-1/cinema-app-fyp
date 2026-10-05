@@ -30,6 +30,13 @@ Two separate apps sharing one database:
 - **Session keys**: users `$_SESSION['ux']` (name) and `$_SESSION['ux_email']`; admin `$_SESSION['admin']` (email). Login checks are inline at the top of each page (`if(!$_SESSION['ux'])` redirects to `signin.php` via a JS `location.assign`).
 - **Schema** (`dbmo.sql`): `addmovie` is the hub, with FKs to `cinema`, `date`, `genre`, `industry`, `language`; `movie_price` holds per-movie tier prices; `booking_details` stores denormalised copies of movie/cinema/date/price strings rather than FKs; `user_reg_login` and `admin_login` hold credentials. The dump header names the database `online_movie_booking_system` but the code connects to `dbmo`.
 
+## Team setup and new code
+
+- Two developers; file ownership and cross-owner change requests live in `TEAM_NOTES.md`. Don't edit files owned by the other person, add a request there instead.
+- Schema changes go in `database/migrations/00X_*.sql` (re-runnable, MariaDB `IF NOT EXISTS`), applied with `docker compose exec -T db mysql -uroot dbmo < database/migrations/<file>`. `dbmo.sql` is the untouched original dump. Shared table/column rules: `database/SCHEMA_CONTRACT.md`.
+- New code uses `includes/functions.php` (`db_query`/`db_one`/`db_all` prepared-statement wrappers, `e()`, `current_user_id()`, `money()`, `flash()`, `redirect()`; sets Asia/Karachi time zone for PHP and MySQL) and `includes/admin_functions.php` (`log_activity()`). Admin pages gate with `include('auth.php');` before any output.
+- Git Bash on this machine rewrites `/var/www/...` paths passed to `docker compose exec`; prefix with `MSYS_NO_PATHCONV=1`.
+
 ## Things to know before changing code
 
 - Queries are built by string interpolation of `$_GET`/`$_POST`/`$_SESSION` values (SQL injection everywhere), passwords and card numbers are stored in plaintext, and `$_SESSION[...]` is read without `isset` in several places. Existing style; don't assume helpers, escaping or validation exist.

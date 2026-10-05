@@ -223,10 +223,14 @@ if(isset($_POST['mov_book_btn'])){
 	echo '<script>alert("Are you Sure, You Want to Submit?")</script>';
 
 
-	$insert_ticket_detail=mysqli_query($con,"insert into booking_details values('null','$ux_name','$ux_email','$ux_mov_dur','$ux_mov_cinema','$ux_mov_name','$ux_date','$ux_price','$ux_seats','$ux_card','$ux_mov_img')");
+	require_once __DIR__ . '/includes/functions.php';
+	$ux_total=(int)preg_replace('/\D/','',(string)strrchr((string)$ux_price,':'))*(int)$ux_seats;
 
+	$insert_ticket_detail=db_query("insert into booking_details (user_name,user_email,user_movie_dur,user_movie_cinema,user_movie_name,user_date,user_price,user_seat,user_card,user_movie_img,user_id,total_amount) values (?,?,?,?,?,?,?,?,?,?,?,?)", 'ssssssssssii', [$ux_name,$ux_email,$ux_mov_dur,$ux_mov_cinema,$ux_mov_name,(string)$ux_date,(string)$ux_price,(string)$ux_seats,$ux_card,$ux_mov_img,current_user_id(),$ux_total]);
 
 	if($insert_ticket_detail>0){
+		$new_booking_id=mysqli_insert_id($con);
+		db_query("update booking_details set booking_ref=? where booking_id=?", 'si', [generate_booking_ref($new_booking_id), $new_booking_id]);
 
 		echo 
 		"
