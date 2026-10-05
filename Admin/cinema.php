@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -62,7 +63,10 @@ if(isset($_POST['cinema_btn'])){
   $cin_loc=$_POST['cinema_loc'];
 
 // insert query
-  $cin_insert=mysqli_query($con,"INSERT INTO cinema VALUES ('null','$cin_name','$cin_loc')");
+  $cin_insert=db_query("insert into cinema (cinema_name,cinema_location) values (?,?)", 'ss', [$cin_name,$cin_loc]);
+  if($cin_insert>0){
+    log_activity('Added cinema', $cin_name);
+  }
 
 
 }

@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -75,7 +76,10 @@ include('admin_header.php');
                       $movie_frt=$_POST['movie_select_frt'];
                     
                     // insert query
-                      $movie_price_insert=mysqli_query($con,"insert into movie_price values('null','$movie_type','$movie_eco','$movie_bus','$movie_frt')");
+                      $movie_price_insert=db_query("insert into movie_price (movie_name_price,economy,business,first_class) values (?,?,?,?)", 'ssss', [$movie_type,$movie_eco,$movie_bus,$movie_frt]);
+                      if($movie_price_insert>0){
+                        log_activity('Added seat prices', $movie_type);
+                      }
                     
                     }
                     

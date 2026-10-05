@@ -1,11 +1,13 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 <?php 
 
 
-$movie_edit_id=$_GET['editmov'];
-$edit_movie_select=mysqli_query($con,"select * from addmovie where movie_id='$movie_edit_id'");
+$movie_edit_id=isset($_GET['editmov']) ? $_GET['editmov'] : '';
+$edit_movie=['movie_name'=>'','movie_img'=>'','movie_trl_url'=>'','movie_duration'=>'','description'=>''];
+$edit_movie_select=db_all("select * from addmovie where movie_id=?", 'i', [$movie_edit_id]);
 foreach($edit_movie_select as $edit_movie)
 {
 //     echo $edit_movie['PId'];
@@ -38,28 +40,38 @@ foreach($edit_movie_select as $edit_movie)
                         <label class="col-sm-3 form-control-label">Movies Name</label>
                         <div class="col-sm-9">
                             <!-- hidden input here -->
-                        <input type="hidden" name="movie_edit_id" value="<?php echo $movie_edit_id; ?>">
+                        <input type="hidden" name="movie_edit_id" value="<?php echo e($movie_edit_id); ?>">
                         <!-- edit movie name -->
-                          <input type="text" class="form-control" name="edit_movie_name" value="<?php echo $edit_movie['movie_name']; ?>">
+                          <input type="text" class="form-control" name="edit_movie_name" value="<?php echo e($edit_movie['movie_name']); ?>">
                         </div>
                       </div>
                       <div class="form-group row">
                         <!-- edit movie date -->
                         <label class="col-sm-3 form-control-label">Movie Image Poster</label>
                         <div class="col-sm-9">
-                          <input type="file" required class="form-control" name="edit_movie_img" value="<?php echo $edit_movie['movie_img']; ?>">
+                          <?php if($edit_movie['movie_img']!=''){ ?>
+                            <img src="upload-images/<?php echo e($edit_movie['movie_img']); ?>" width="70" height="70" style="margin-bottom:8px;">
+                          <?php } ?>
+                          <input type="file" class="form-control" name="edit_movie_img">
+                          <small class="form-text text-muted">Leave empty to keep the current poster.</small>
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Movie Trailer</label>
                         <div class="col-sm-9">
-                          <input type="text" class="form-control" name="edit_movie_trl_url" value="<?php echo $edit_movie['movie_trl_url']; ?>">
+                          <input type="text" class="form-control" name="edit_movie_trl_url" value="<?php echo e($edit_movie['movie_trl_url']); ?>">
                         </div>
                       </div>
                       <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Movie Duration</label>
                         <div class="col-sm-9">
-                          <input type="text" class="form-control" name="edit_movie_duration" value="<?php echo $edit_movie['movie_duration']; ?>">
+                          <input type="text" class="form-control" name="edit_movie_duration" value="<?php echo e($edit_movie['movie_duration']); ?>">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">Movie Description</label>
+                        <div class="col-sm-9">
+                          <textarea class="form-control" name="edit_movie_description" rows="4"><?php echo e($edit_movie['description']); ?></textarea>
                         </div>
                       </div>
                       <div class="col-sm-9 ml-auto">
@@ -80,17 +92,38 @@ foreach($edit_movie_select as $edit_movie)
                   $edit_mov_name=$_POST['edit_movie_name'];
                   $edit_mov_trl_url=$_POST['edit_movie_trl_url'];
                   $edit_mov_dur=$_POST['edit_movie_duration'];
-                  // for img upload and save
-                  $edit_mov_image=$_FILES['edit_movie_img']['name'];
-                  $edit_mov_image_tmp=$_FILES['edit_movie_img']['tmp_name'];
-                  move_uploaded_file($edit_mov_image_tmp,"upload-images/".$edit_mov_image);
-            
+                  $edit_mov_desc=isset($_POST['edit_movie_description']) ? trim($_POST['edit_movie_description']) : '';
+                  // for img upload and save: no new file means keep the old poster
+                  $edit_mov_image=$edit_movie['movie_img'];
+                  $new_image=isset($_FILES['edit_movie_img']) ? basename($_FILES['edit_movie_img']['name']) : '';
+                  // only image files go into upload-images
+                  $allowed_ext=['jpg','jpeg','png','gif','webp'];
+                  $image_ok=true;
+                  if($new_image!='')
+                  {
+                      if(in_array(strtolower(pathinfo($new_image, PATHINFO_EXTENSION)), $allowed_ext))
+                      {
+                          move_uploaded_file($_FILES['edit_movie_img']['tmp_name'],"upload-images/".$new_image);
+                          $edit_mov_image=$new_image;
+                      }
+                      else
+                      {
+                          $image_ok=false;
+                          echo "<script>alert('Please upload a JPG, PNG, GIF or WEBP poster.');</script>";
+                      }
+                  }
 
-                  // update query not worked
+                  $movie_edited=false;
+                  if($image_ok)
+                  {
+                      $movie_edited=db_query("update addmovie set movie_name=?, movie_img=?, movie_trl_url=?, movie_duration=?, description=? where movie_id=?",
+                          'sssssi',
+                          [$edit_mov_name,$edit_mov_image,$edit_mov_trl_url,$edit_mov_dur,$edit_mov_desc,$addmovie_edit_id]);
+                  }
 
-                  $movie_edited=mysqli_query($con,"update  addmovie set movie_name='$edit_mov_name', movie_img='$edit_mov_image', movie_trl_url='$edit_mov_trl_url', movie_duration='$edit_mov_dur' where  movie_id='$addmovie_edit_id'");
-                 
-                  if($movie_edited>0){
+                  if($movie_edited!==false){
+
+                    log_activity('Edited movie', 'movie_id=' . $addmovie_edit_id . ', ' . $edit_mov_name);
 
                     echo "
                      <script>

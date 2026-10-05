@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -131,6 +132,12 @@ include('admin_header.php');
                         </div>
                       </div>
                       <div class="form-group row">
+                        <label class="col-sm-3 form-control-label">Movie Description</label>
+                        <div class="col-sm-9">
+                          <textarea class="form-control" name="movie_description" rows="4" placeholder="Short story of the movie"></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Movie Duration</label>
                         <div class="col-sm-9">
                         <select  class="form-control" name="movie_duration">
@@ -160,23 +167,47 @@ include('admin_header.php');
               
               if(isset($_POST['add_movie_btn']))
               {
-                  $mov_name=$_POST['movie_name'];
-                  $mov_cinema=$_POST['movie_cinema'];
-                  $mov_genre=$_POST['movie_genre'];
-                  $mov_industry=$_POST['movie_industry'];
-                  $mov_lang=$_POST['movie_language'];
-                  $mov_date=$_POST['movie_date'];
-                  $mov_trl_url=$_POST['movie_trl_url'];
-                  $mov_dur=$_POST['movie_duration'];
+                  // the "Select" options are disabled, so an unpicked dropdown is not sent at all
+                  $mov_name=isset($_POST['movie_name']) ? trim($_POST['movie_name']) : '';
+                  $mov_cinema=isset($_POST['movie_cinema']) ? $_POST['movie_cinema'] : '';
+                  $mov_genre=isset($_POST['movie_genre']) ? $_POST['movie_genre'] : '';
+                  $mov_industry=isset($_POST['movie_industry']) ? $_POST['movie_industry'] : '';
+                  $mov_lang=isset($_POST['movie_language']) ? $_POST['movie_language'] : '';
+                  $mov_date=isset($_POST['movie_date']) ? $_POST['movie_date'] : '';
+                  $mov_trl_url=isset($_POST['movie_trl_url']) ? $_POST['movie_trl_url'] : '';
+                  $mov_dur=isset($_POST['movie_duration']) ? $_POST['movie_duration'] : '';
+                  $mov_desc=isset($_POST['movie_description']) ? trim($_POST['movie_description']) : '';
                   // for img upload and save
-                  $mov_image=$_FILES['movie_img']['name'];
-                  $mov_image_tmp=$_FILES['movie_img']['tmp_name'];
-                  move_uploaded_file($mov_image_tmp,"upload-images/".$mov_image);
-              
+                  $mov_image=isset($_FILES['movie_img']) ? basename($_FILES['movie_img']['name']) : '';
+                  $mov_image_tmp=isset($_FILES['movie_img']) ? $_FILES['movie_img']['tmp_name'] : '';
+                  // only image files go into upload-images
+                  $allowed_ext=['jpg','jpeg','png','gif','webp'];
+                  if($mov_name=='' || $mov_cinema=='' || $mov_genre=='' || $mov_industry=='' || $mov_lang=='' || $mov_date=='' || $mov_dur=='')
+                  {
+                      echo "<script>alert('Please fill in the movie name and pick every dropdown.');</script>";
+                  }
+                  else if($mov_image=='' || !in_array(strtolower(pathinfo($mov_image, PATHINFO_EXTENSION)), $allowed_ext))
+                  {
+                      echo "<script>alert('Please upload a JPG, PNG, GIF or WEBP poster.');</script>";
+                  }
+                  else
+                  {
+                      move_uploaded_file($mov_image_tmp,"upload-images/".$mov_image);
 
-                  
-                  $insert=mysqli_query($con,"insert into addmovie values('null','$mov_name','$mov_cinema','$mov_genre','$mov_industry','$mov_lang','$mov_date','$mov_image','$mov_trl_url','$mov_dur')");
-                 
+                      $insert=db_query("insert into addmovie (movie_name,movie_cin_id,movie_genre_id,movie_indus_id,movie_lang_id,movie_date_id,movie_img,movie_trl_url,movie_duration,description) values (?,?,?,?,?,?,?,?,?,?)",
+                          'siiiiissss',
+                          [$mov_name,$mov_cinema,$mov_genre,$mov_industry,$mov_lang,$mov_date,$mov_image,$mov_trl_url,$mov_dur,$mov_desc]);
+
+                      if($insert>0)
+                      {
+                          log_activity('Added movie', $mov_name);
+                          echo "<script>window.location.assign('viewmovie.php');</script>";
+                      }
+                      else
+                      {
+                          echo "<script>alert('Something Went Wrong Try Another Time!');</script>";
+                      }
+                  }
               }
 
 

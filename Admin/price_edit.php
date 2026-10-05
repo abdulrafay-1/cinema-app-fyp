@@ -1,12 +1,14 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
 
 
 <?php
-$price_edit_id=$_GET['pr_edit'];
-$edit_price_select=mysqli_query($con,"select * from movie_price where price_id='$price_edit_id'");
+$price_edit_id=isset($_GET['pr_edit']) ? $_GET['pr_edit'] : '';
+$edit_movie_pr=['movie_name_price'=>'','economy'=>'','business'=>'','first_class'=>''];
+$edit_price_select=db_all("select * from movie_price where price_id=?", 'i', [$price_edit_id]);
 foreach($edit_price_select as $edit_movie_pr)
 {
 //     echo $edit_movie_pr['PId'];
@@ -41,8 +43,8 @@ foreach($edit_price_select as $edit_movie_pr)
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Select Movie</label>
                         <div class="col-sm-9">
-                        <input type="hidden" name="edit_price_id" value="<?php echo $price_edit_id ?>">
-                        <input class="form-control" name="movie_name_edited" value="<?php echo $edit_movie_pr['movie_name_price']; ?>" >
+                        <input type="hidden" name="edit_price_id" value="<?php echo e($price_edit_id) ?>">
+                        <input class="form-control" name="movie_name_edited" value="<?php echo e($edit_movie_pr['movie_name_price']); ?>" >
                         </div>
                         
                       </div>
@@ -51,13 +53,13 @@ foreach($edit_price_select as $edit_movie_pr)
                         <div class="col-sm-9">
                           <div class="row">
                             <div class="col-md-4">
-                              <input type="text" placeholder="Economy-Class" class="form-control"   name="movie_select_eco_edited"   value="<?php echo $edit_movie_pr['economy']; ?>">
+                              <input type="text" placeholder="Economy-Class" class="form-control"   name="movie_select_eco_edited"   value="<?php echo e($edit_movie_pr['economy']); ?>">
                             </div>
                             <div class="col-md-4">
-                              <input type="text" placeholder="Business-Class" class="form-control"  name="movie_select_bus_edited"  value="<?php echo $edit_movie_pr['business']; ?>" >
+                              <input type="text" placeholder="Business-Class" class="form-control"  name="movie_select_bus_edited"  value="<?php echo e($edit_movie_pr['business']); ?>" >
                             </div>
                             <div class="col-md-4">
-                              <input type="text" placeholder="First-Class" class="form-control"  name="movie_select_frt_edited"   value="<?php echo $edit_movie_pr['first_class']; ?>">
+                              <input type="text" placeholder="First-Class" class="form-control"  name="movie_select_frt_edited"   value="<?php echo e($edit_movie_pr['first_class']); ?>">
                             </div>
                           </div>
                         </div>
@@ -84,12 +86,13 @@ foreach($edit_price_select as $edit_movie_pr)
                       $movie_bus_edited=$_POST['movie_select_bus_edited'];
                       $movie_frt_edited=$_POST['movie_select_frt_edited'];
                     
-                    // update query
-                      $movie_price_update=mysqli_query($con,"update  movie_price  set movie_name_price='$movie_type_edited',economy='$movie_eco_edited',business='$movie_bus_edited',	first_class='$movie_frt_edited'");
+                    // update query: the WHERE makes it change only this movie's row (before, it overwrote every row)
+                      $movie_price_update=db_query("update movie_price set movie_name_price=?,economy=?,business=?,first_class=? where price_id=?", 'ssssi', [$movie_type_edited,$movie_eco_edited,$movie_bus_edited,$movie_frt_edited,$movie_price_edit_id]);
 
 
-                      if($movie_price_update>0)
+                      if($movie_price_update!==false)
                          {
+                             log_activity('Edited seat prices', 'price_id=' . $movie_price_edit_id . ', ' . $movie_type_edited);
                              echo "
                          <script>
                          window.location.assign('price.php');

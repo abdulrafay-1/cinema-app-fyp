@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -51,7 +52,10 @@ if(isset($_POST['indus_btn'])){
   $indus_type=$_POST['indus_name'];
 
 // insert query
-  $industry_insert=mysqli_query($con,"insert into industry values('null','$indus_type')");
+  $industry_insert=db_query("insert into industry (industry_name) values (?)", 's', [$indus_type]);
+  if($industry_insert>0){
+    log_activity('Added industry', $indus_type);
+  }
 
 }
 

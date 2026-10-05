@@ -1,15 +1,15 @@
 <?php 
 // session for admin
 
-
-include('config.php');
+// the session has to be started before it can be destroyed
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 session_unset();
 session_destroy();
 
-echo 
-"
-<script>window.location.assign('login.php')</script>
-";
+header('Location: login.php');
+exit;
 // session for admin
 
 ?>

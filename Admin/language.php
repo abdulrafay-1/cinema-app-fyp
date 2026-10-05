@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -49,7 +50,10 @@ if(isset($_POST['lang_btn'])){
   $lang_type=$_POST['lang_name'];
 
 // insert query
-  $language_insert=mysqli_query($con,"insert into language values('null','$lang_type')");
+  $language_insert=db_query("insert into language (language_name) values (?)", 's', [$lang_type]);
+  if($language_insert>0){
+    log_activity('Added language', $lang_type);
+  }
 
 }
 

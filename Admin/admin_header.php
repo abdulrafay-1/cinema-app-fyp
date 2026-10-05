@@ -1,5 +1,7 @@
-<?php 
+<?php
 include('config.php');
+// gives every admin page e(), db_query() and log_activity()
+require_once __DIR__ . '/../includes/admin_functions.php';
 ?>
 
 
@@ -56,7 +58,7 @@ include('config.php');
         <div class="sidebar-header d-flex align-items-center">
           <div class="avatar"><img src="img/admin.jpg" alt="..." class="img-fluid rounded-circle"></div>
           <div class="title">
-            <h1 class="h5">Bilal Hussain</h1> 
+            <h1 class="h5" style="word-break: break-all;"><?php echo e(isset($_SESSION['admin']) ? $_SESSION['admin'] : 'Admin'); ?></h1>
           </div>
         </div>
         <!-- Sidebar Navidation Menus--><span class="heading">Main</span>
@@ -76,6 +78,22 @@ include('config.php');
                 </li>
                 <li><a href="price.php"> <i class="icon-padnote"></i>Seat Price Details </a></li>
                 <li><a href="user.php"> <i class="fa fa-bookmark"></i>Number Of Users</a></li>
+        </ul>
+        <span class="heading">Shows & Tickets</span>
+        <ul class="list-unstyled">
+                <li><a href="shows.php"> <i class="fa fa-film"></i>Shows </a></li>
+                <li><a href="scan_ticket.php"> <i class="fa fa-qrcode"></i>Scan Ticket </a></li>
+                <li><a href="refunds.php"> <i class="fa fa-undo"></i>Refunds </a></li>
+                <li><a href="reports.php"> <i class="fa fa-bar-chart"></i>Reports </a></li>
+        </ul>
+        <span class="heading">Customers & Content</span>
+        <ul class="list-unstyled">
+                <li><a href="snacks.php"> <i class="fa fa-cutlery"></i>Snacks </a></li>
+                <li><a href="promo_codes.php"> <i class="fa fa-tags"></i>Promo Codes </a></li>
+                <li><a href="reviews.php"> <i class="fa fa-star"></i>Reviews </a></li>
+                <li><a href="messages.php"> <i class="fa fa-envelope"></i>Messages </a></li>
+                <li><a href="coming_soon.php"> <i class="fa fa-clock-o"></i>Coming Soon </a></li>
+                <li><a href="activity_log.php"> <i class="fa fa-history"></i>Activity Log </a></li>
         </ul>
       </nav>
       <!-- Sidebar Navigation end-->

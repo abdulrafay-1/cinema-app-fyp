@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -42,7 +43,10 @@ if(isset($_POST['date_btn'])){
   $date_type=$_POST['date_sel'];
 
 // insert query
-  $date_insert=mysqli_query($con,"insert into date values('null',' $date_type')");
+  $date_insert=db_query("insert into date (date_name) values (?)", 's', [$date_type]);
+  if($date_insert>0){
+    log_activity('Added cinema date', $date_type);
+  }
 
 }
 

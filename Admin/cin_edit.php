@@ -1,12 +1,14 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
 <!-- edit php coding -->
 
 <?php
-$cin_edit_id=$_GET['Cin'];
-$edit_cin_select=mysqli_query($con,"select * from cinema where cin_id='$cin_edit_id'");
+$cin_edit_id=isset($_GET['Cin']) ? $_GET['Cin'] : '';
+$edit_cinema=['cinema_name'=>'','cinema_location'=>''];
+$edit_cin_select=db_all("select * from cinema where cin_id=?", 'i', [$cin_edit_id]);
 foreach($edit_cin_select as $edit_cinema)
 {
 //     echo $edit_cinema['PId'];
@@ -45,8 +47,8 @@ foreach($edit_cin_select as $edit_cinema)
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Cinema Name</label>
                         <div class="col-sm-9"> 
-                            <input type="hidden" name="edit_id" value="<?php echo $cin_edit_id ?>">
-             <input type="text" class="form-control" name="edit_cinema_n" value="<?php echo $edit_cinema['cinema_name'] ?>">
+                            <input type="hidden" name="edit_id" value="<?php echo e($cin_edit_id) ?>">
+             <input type="text" class="form-control" name="edit_cinema_n" value="<?php echo e($edit_cinema['cinema_name']) ?>">
                         </div>
                       </div>
 
@@ -54,7 +56,7 @@ foreach($edit_cin_select as $edit_cinema)
                       <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Cinema Location</label>
                         <div class="col-sm-9">
-         <input type="text" class="form-control" name="edit_cinema_loc" value="<?php echo $edit_cinema['cinema_location'] ?>">
+         <input type="text" class="form-control" name="edit_cinema_loc" value="<?php echo e($edit_cinema['cinema_location']) ?>">
                         </div>
                       </div>
 
@@ -82,11 +84,12 @@ if(isset($_POST['edit_cinema_btn'])){
   $cin_loc=$_POST['edit_cinema_loc'];
 
 // insert query
-  $cin_edit_result=mysqli_query($con,"update cinema set cinema_name='$cin_name',cinema_location='$cin_loc' where cin_id='$cin_id'");
+  $cin_edit_result=db_query("update cinema set cinema_name=?,cinema_location=? where cin_id=?", 'ssi', [$cin_name,$cin_loc,$cin_id]);
 
 // now using if else for  redirecting to cinema.php 
-if($cin_edit_result>0)
+if($cin_edit_result!==false)
     {
+        log_activity('Edited cinema', 'cin_id=' . $cin_id . ', ' . $cin_name);
         echo "
     <script>
     window.location.assign('cinema.php');

@@ -1,4 +1,5 @@
 <?php
+include('auth.php');
 include('admin_header.php');
 ?>
 
@@ -66,7 +67,10 @@ if(isset($_POST['genre_btn'])){
   $genre_type=$_POST['genre_name'];
 
 // insert query
-  $genre_insert=mysqli_query($con,"insert into genre values('null','$genre_type')");
+  $genre_insert=db_query("insert into genre (genre_name) values (?)", 's', [$genre_type]);
+  if($genre_insert>0){
+    log_activity('Added genre', $genre_type);
+  }
 
 }
 
