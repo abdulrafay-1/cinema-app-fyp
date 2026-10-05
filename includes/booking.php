@@ -4,6 +4,8 @@ require_once __DIR__ . '/functions.php';
 const HOLD_MINUTES = 5;
 const MAX_SEATS = 10;
 const SEAT_CLASSES = ['Economy', 'Business', 'First'];
+const TICKETS_SQL = "(CASE WHEN b.show_id IS NULL THEN IF(b.user_seat REGEXP '^[0-9]+$', CAST(b.user_seat AS UNSIGNED), 0) ELSE LENGTH(b.user_seat) - LENGTH(REPLACE(b.user_seat, ',', '')) + 1 END)";
+const REFUNDED_SQL = "(CASE WHEN b.refund_status = 'Refunded' THEN b.refund_amount ELSE 0 END)";
 
 function seat_class($row_letter)
 {
