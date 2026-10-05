@@ -18,7 +18,7 @@ App time zone: **Asia/Karachi**. `includes/functions.php` sets it for PHP (`date
 | user_date | VARCHAR(200) | show date text |
 | user_price | VARCHAR(200) | legacy rows: `"Economy : 1100"`; new rows: seat classes summary |
 | user_seat | VARCHAR(200) | legacy: seat count; new: seat labels, e.g. `"A1, A2"` |
-| user_card | VARCHAR(200) | **last 4 digits only** for new rows (or wallet mobile last 4) |
+| user_card | VARCHAR(200) | **last 4 digits only** for new rows: card last 4, or the JazzCash/Easypaisa mobile's last 4 |
 | user_id | INT NULL | `user_reg_login.id`; backfilled from email for old rows |
 | show_id | INT NULL | `shows.show_id`; NULL for legacy bookings |
 | booking_ref | VARCHAR(20) UNIQUE | `CNX-YYYY-00001` |
@@ -66,6 +66,8 @@ Foreign keys on `shows` mean **a movie or cinema that has shows cannot be delete
 **Booking reference.** `CNX-YYYY-00001`: year + booking_id padded to 5 digits (`generate_booking_ref($booking_id)`), set right after the insert, in the same transaction. The ticket QR code contains **only** the booking_ref.
 
 **Refund policy.** Cancelled 24h or more before show start = 100% refund; less than 24h = 50%. Shows that already started can't be cancelled. On cancel: `status='Cancelled'`, `refund_status='Pending'`, `refund_amount` set, `cancelled_at=NOW()`, its `booking_seats` rows deleted (seats released). An admin then sets `refund_status` to `Refunded` or `Rejected`.
+
+**Totals.** `total_amount = tickets + snacks_amount - discount_amount`. Promo discount = `floor((tickets + snacks) * discount_percent / 100)`. `max_uses = 0` means unlimited. `used_count` is incremented inside the booking transaction.
 
 **Loyalty.** 1 point per PKR 100 of `total_amount` (`floor(total/100)`), added on booking, removed on cancel (never below 0).
 

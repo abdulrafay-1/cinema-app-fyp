@@ -170,3 +170,217 @@ function booking_css()
     $base = (strpos($_SERVER['SCRIPT_NAME'], '/Admin/') !== false) ? '../' : '';
     return '<link rel="stylesheet" href="' . $base . 'assets/booking.css?v=1">';
 }
+
+function active_snacks()
+{
+    return db_all('SELECT snack_id, name, price, image FROM snacks WHERE is_active = 1 ORDER BY price');
+}
+
+function snack_icon($name)
+{
+    $name = strtolower($name);
+    foreach (['popcorn' => '🍿', 'nacho' => '🧀', 'drink' => '🥤', 'hot dog' => '🌭', 'coffee' => '☕', 'water' => '💧'] as $word => $icon) {
+        if (strpos($name, $word) !== false) {
+            return $icon;
+        }
+    }
+    return '🍽️';
+}
+
+function find_promo($code, $lock = false)
+{
+    $code = strtoupper(trim((string) $code));
+    if ($code === '') {
+        return [null, 'Please enter a promo code.'];
+    }
+    $promo = db_one('SELECT * FROM promo_codes WHERE code = ?' . ($lock ? ' FOR UPDATE' : ''), 's', [$code]);
+    if (!$promo || !(int) $promo['is_active']) {
+        return [null, 'This promo code is not valid.'];
+    }
+    if ($promo['valid_until'] !== null && $promo['valid_until'] < date('Y-m-d')) {
+        return [null, 'This promo code has expired.'];
+    }
+    if ((int) $promo['max_uses'] > 0 && (int) $promo['used_count'] >= (int) $promo['max_uses']) {
+        return [null, 'This promo code has reached its usage limit.'];
+    }
+    return [$promo, null];
+}
+
+function clean_snack_qty($input)
+{
+    $qty = [];
+    $valid = array_column(active_snacks(), null, 'snack_id');
+    foreach ((array) $input as $snack_id => $count) {
+        $count = max(0, min(10, (int) $count));
+        if ($count > 0 && isset($valid[(int) $snack_id])) {
+            $qty[(int) $snack_id] = $count;
+        }
+    }
+    return $qty;
+}
+
+function checkout_totals($prices, $seat_labels, $snack_qty, $promo)
+{
+    $seats = priced_seats($seat_labels, $prices);
+    $tickets = array_sum(array_column($seats, 'price'));
+    $snacks = [];
+    $snacks_amount = 0;
+    if ($snack_qty) {
+        foreach (active_snacks() as $snack) {
+            $qty = $snack_qty[(int) $snack['snack_id']] ?? 0;
+            if ($qty > 0) {
+                $line = (int) $snack['price'] * $qty;
+                $snacks[] = ['snack_id' => (int) $snack['snack_id'], 'name' => $snack['name'], 'qty' => $qty, 'price' => (int) $snack['price'], 'line' => $line];
+                $snacks_amount += $line;
+            }
+        }
+    }
+    $subtotal = $tickets + $snacks_amount;
+    $discount = $promo ? (int) floor($subtotal * (int) $promo['discount_percent'] / 100) : 0;
+    return [
+        'seats' => $seats,
+        'tickets_amount' => $tickets,
+        'snacks' => $snacks,
+        'snacks_amount' => $snacks_amount,
+        'subtotal' => $subtotal,
+        'discount' => $discount,
+        'promo_code' => $promo ? $promo['code'] : null,
+        'promo_percent' => $promo ? (int) $promo['discount_percent'] : 0,
+        'total' => $subtotal - $discount,
+    ];
+}
+
+function loyalty_points_for($amount)
+{
+    return (int) floor((int) $amount / 100);
+}
+
+function seat_class_summary($seats)
+{
+    $counts = array_count_values(array_column($seats, 'class'));
+    $parts = [];
+    foreach (SEAT_CLASSES as $class) {
+        if (!empty($counts[$class])) {
+            $parts[] = $class . ' x' . $counts[$class];
+        }
+    }
+    return implode(', ', $parts);
+}
+
+function current_user_row()
+{
+    $id = current_user_id();
+    return $id ? db_one('SELECT id, name, email, status, loyalty_points FROM user_reg_login WHERE id = ?', 'i', [$id]) : null;
+}
+
+function load_checkout($user_id, $show_id)
+{
+    $show = bookable_show($show_id);
+    $holds = $show ? user_holds($user_id, $show['show_id']) : [];
+    $prices = $show ? movie_prices($show['movie_name']) : null;
+    if (!$holds || !$prices) {
+        return null;
+    }
+    $state = $_SESSION['checkout'] ?? null;
+    if (!$state || (int) $state['show_id'] !== (int) $show['show_id']) {
+        $state = ['show_id' => (int) $show['show_id'], 'snacks' => [], 'promo' => null];
+    }
+    $promo = null;
+    if ($state['promo']) {
+        list($promo) = find_promo($state['promo']);
+        if (!$promo) {
+            $state['promo'] = null;
+        }
+    }
+    $_SESSION['checkout'] = $state;
+    return [
+        'show' => $show,
+        'prices' => $prices,
+        'state' => $state,
+        'seconds_left' => (int) min(array_column($holds, 'seconds_left')),
+        'totals' => checkout_totals($prices, array_column($holds, 'seat_label'), $state['snacks'], $promo),
+    ];
+}
+
+function finalize_booking($user, $show, $snack_qty, $promo_code, $method, $account_last4)
+{
+    $db = db();
+    mysqli_begin_transaction($db);
+    $fail = function ($message) use ($db) {
+        mysqli_rollback($db);
+        return ['ok' => false, 'message' => $message];
+    };
+
+    $holds = db_all(
+        'SELECT seat_label FROM seat_holds WHERE user_id = ? AND show_id = ? AND expires_at > NOW() FOR UPDATE',
+        'ii',
+        [(int) $user['id'], (int) $show['show_id']]
+    );
+    if (!$holds) {
+        return $fail('Your seat hold has expired. Please select your seats again.');
+    }
+    $prices = movie_prices($show['movie_name']);
+    if (!$prices) {
+        return $fail('Ticket prices are not set for this movie.');
+    }
+
+    $promo = null;
+    if ($promo_code) {
+        list($promo, $promo_error) = find_promo($promo_code, true);
+        if (!$promo) {
+            return $fail($promo_error . ' Please go back to checkout and remove it.');
+        }
+    }
+
+    $labels = array_column($holds, 'seat_label');
+    sort($labels, SORT_NATURAL);
+    $t = checkout_totals($prices, $labels, $snack_qty, $promo);
+
+    $inserted = db_query(
+        "INSERT INTO booking_details
+            (user_name, user_email, user_movie_dur, user_movie_cinema, user_movie_name, user_date, user_price, user_seat, user_card, user_movie_img,
+             user_id, show_id, total_amount, snacks_amount, discount_amount, promo_code, payment_method, status, refund_status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Booked', 'None')",
+        'ssssssssssiiiiiss',
+        [
+            $user['name'], $user['email'], show_time_label($show['show_time']), $show['cinema_name'],
+            $show['movie_name'], show_date_label($show['show_date']), seat_class_summary($t['seats']), implode(', ', $labels),
+            $account_last4, $show['movie_img'], (int) $user['id'], (int) $show['show_id'], $t['total'], $t['snacks_amount'],
+            $t['discount'], $t['promo_code'], $method,
+        ]
+    );
+    if (!$inserted) {
+        return $fail('Could not save your booking. Please try again.');
+    }
+    $booking_id = mysqli_insert_id($db);
+    $ref = generate_booking_ref($booking_id);
+    db_query('UPDATE booking_details SET booking_ref = ? WHERE booking_id = ?', 'si', [$ref, $booking_id]);
+
+    foreach ($t['seats'] as $seat) {
+        $ok = db_query(
+            'INSERT INTO booking_seats (booking_id, show_id, seat_label, seat_class, price) VALUES (?, ?, ?, ?, ?)',
+            'iissi',
+            [$booking_id, (int) $show['show_id'], $seat['label'], $seat['class'], $seat['price']]
+        );
+        if (!$ok) {
+            return $fail('Seat ' . $seat['label'] . ' was just booked by someone else. Please select your seats again.');
+        }
+    }
+    foreach ($t['snacks'] as $snack) {
+        db_query(
+            'INSERT INTO booking_snacks (booking_id, snack_id, qty, price) VALUES (?, ?, ?, ?)',
+            'iiii',
+            [$booking_id, $snack['snack_id'], $snack['qty'], $snack['price']]
+        );
+    }
+    if ($promo) {
+        db_query('UPDATE promo_codes SET used_count = used_count + 1 WHERE promo_id = ?', 'i', [(int) $promo['promo_id']]);
+    }
+    db_query('UPDATE user_reg_login SET loyalty_points = loyalty_points + ? WHERE id = ?', 'ii', [loyalty_points_for($t['total']), (int) $user['id']]);
+    db_query('DELETE FROM seat_holds WHERE user_id = ?', 'i', [(int) $user['id']]);
+
+    if (!mysqli_commit($db)) {
+        return $fail('Could not complete your booking. Please try again.');
+    }
+    return ['ok' => true, 'booking_id' => $booking_id, 'booking_ref' => $ref];
+}
