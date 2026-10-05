@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+  db:
+    image: mariadb:10.4
+    command: --sql-mode=""
+    environment:
+      MARIADB_ROOT_PASSWORD: ""
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "1"
+      MARIADB_DATABASE: dbmo
+    volumes:
+      - ./dbmo.sql:/docker-entrypoint-initdb.d/dbmo.sql:ro
+      - dbdata:/var/lib/mysql
+volumes:
+  dbdata:
