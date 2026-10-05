@@ -45,6 +45,9 @@ function check_in_ticket($ref)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_ok()) {
+        json_out(['result' => 'NOT_FOUND', 'ref' => 'Session expired, reload the page'], 403);
+    }
     json_out(check_in_ticket($_POST['ref'] ?? ''));
 }
 
@@ -133,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     lastRef = ref; lastAt = Date.now(); busy = true;
     var body = new FormData();
     body.append('ref', ref);
+    body.append('csrf', <?php echo json_encode(csrf_token()); ?>);
     fetch('scan_ticket.php', { method: 'POST', body: body, credentials: 'same-origin' })
       .then(function (r) { return r.json(); })
       .then(render)

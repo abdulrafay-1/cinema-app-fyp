@@ -118,6 +118,24 @@ function require_login()
     }
 }
 
+function csrf_token()
+{
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(16));
+    }
+    return $_SESSION['csrf'];
+}
+
+function csrf_field()
+{
+    return '<input type="hidden" name="csrf" value="' . csrf_token() . '">';
+}
+
+function csrf_ok()
+{
+    return isset($_POST['csrf']) && hash_equals(csrf_token(), (string) $_POST['csrf']);
+}
+
 function json_out($data, $code = 200)
 {
     http_response_code($code);

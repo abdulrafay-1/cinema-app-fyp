@@ -25,6 +25,7 @@ Seed shows are created relative to the day you run the migration (next 7 days). 
 | Migration | Author | What |
 |---|---|---|
 | 001_shared_schema.sql | Rafay | new columns on booking_details / user_reg_login / addmovie, all new tables, seed data |
+| 002_rafay_refund_reason.sql | Rafay | `booking_details.refund_reason`, `refund_processed_at` (admin refund decisions) |
 
 Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
 
@@ -55,6 +56,7 @@ log_activity('Deleted cinema', 'cin_id=' . $id);
 - `money(1100)` → `PKR 1,100`
 - `flash('success', 'Saved')` + `echo render_flash();`
 - `redirect($url)`
+- `csrf_field()` inside a form + `csrf_ok()` when handling the POST
 
 Including `functions.php` also starts the session if needed and sets the Asia/Karachi time zone.
 

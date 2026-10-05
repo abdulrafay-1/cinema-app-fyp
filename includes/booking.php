@@ -433,6 +433,49 @@ function booking_when($booking)
     return [$booking['user_date'], $booking['user_movie_dur']];
 }
 
+function refund_quote($booking)
+{
+    if ($booking['status'] !== 'Booked' || !$booking['starts_at']) {
+        return null;
+    }
+    $seconds = strtotime($booking['starts_at']) - time();
+    if ($seconds <= 0) {
+        return null;
+    }
+    $percent = $seconds >= 86400 ? 100 : 50;
+    return ['percent' => $percent, 'amount' => (int) floor((int) $booking['total_amount'] * $percent / 100)];
+}
+
+function cancel_booking($booking)
+{
+    $quote = refund_quote($booking);
+    if (!$quote) {
+        return ['ok' => false, 'message' => 'This booking can no longer be cancelled.'];
+    }
+    $db = db();
+    mysqli_begin_transaction($db);
+    $updated = db_query(
+        "UPDATE booking_details SET status = 'Cancelled', refund_status = 'Pending', refund_amount = ?, cancelled_at = NOW()
+         WHERE booking_id = ? AND status = 'Booked'",
+        'ii',
+        [$quote['amount'], (int) $booking['booking_id']]
+    );
+    if ($updated !== 1) {
+        mysqli_rollback($db);
+        return ['ok' => false, 'message' => 'This booking can no longer be cancelled.'];
+    }
+    db_query('DELETE FROM booking_seats WHERE booking_id = ?', 'i', [(int) $booking['booking_id']]);
+    if ($booking['user_id'] !== null) {
+        db_query(
+            'UPDATE user_reg_login SET loyalty_points = GREATEST(loyalty_points - ?, 0) WHERE id = ?',
+            'ii',
+            [loyalty_points_for($booking['total_amount']), (int) $booking['user_id']]
+        );
+    }
+    mysqli_commit($db);
+    return ['ok' => true] + $quote;
+}
+
 function status_badge($status)
 {
     $map = ['Booked' => 'green', 'Used' => 'blue', 'Cancelled' => 'red', 'Pending' => 'orange', 'Refunded' => 'green', 'Rejected' => 'red'];

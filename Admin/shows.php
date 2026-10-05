@@ -67,6 +67,11 @@ function validate_show_form($post, $existing)
 $form_errors = [];
 $form_values = null;
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !csrf_ok()) {
+    flash('danger', 'Your session expired. Please try again.');
+    redirect('shows.php');
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $show_id = (int) ($_POST['show_id'] ?? 0);
@@ -166,6 +171,7 @@ include('admin_header.php');
       <div class="title"><strong><?php echo $form_show_id ? 'Edit Show #' . $form_show_id : 'Add Show'; ?></strong></div>
       <div class="block-body">
         <form method="post" action="shows.php">
+          <?php echo csrf_field(); ?>
           <input type="hidden" name="action" value="save">
           <input type="hidden" name="show_id" value="<?php echo $form_show_id; ?>">
           <div class="form-row">
@@ -266,6 +272,7 @@ include('admin_header.php');
                 <td style="white-space:nowrap;">
                   <a href="shows.php?edit=<?php echo (int) $show['show_id']; ?>&amp;view=<?php echo $view; ?>" title="Edit"><i class="fa fa-pencil btn"></i></a>
                   <form method="post" action="shows.php" style="display:inline;" onsubmit="return confirm('Delete this show?');">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="show_id" value="<?php echo (int) $show['show_id']; ?>">
                     <button type="submit" class="btn btn-link p-0" title="Delete"><i class="fa fa-trash btn"></i></button>

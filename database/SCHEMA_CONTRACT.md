@@ -30,6 +30,8 @@ App time zone: **Asia/Karachi**. `includes/functions.php` sets it for PHP (`date
 | status | VARCHAR(20) | `Booked` / `Cancelled` / `Used` |
 | refund_status | VARCHAR(20) | `None` / `Pending` / `Refunded` / `Rejected` |
 | refund_amount | INT | |
+| refund_reason | VARCHAR(255) NULL | admin's reason when Rejected (migration 002) |
+| refund_processed_at | DATETIME NULL | when the admin approved/rejected (migration 002) |
 | cancelled_at, checked_in_at | DATETIME NULL | |
 | booked_at | DATETIME | default now |
 
