@@ -39,7 +39,7 @@ foreach (db_all("SELECT SUBSTRING_INDEX(b.user_price, ' ', 1) AS cls, SUM(" . TI
 }
 
 $statuses = array_column(db_all('SELECT status, COUNT(*) AS n FROM booking_details GROUP BY status'), 'n', 'status');
-$recent = db_all('SELECT booking_ref, user_name, user_movie_name, user_date, user_movie_dur, total_amount, status, payment_method, booked_at FROM booking_details ORDER BY booking_id DESC LIMIT 8');
+$recent = db_all('SELECT booking_ref, user_name, user_movie_name, user_date, user_movie_dur, total_amount, status, payment_method, booked_at FROM booking_details ORDER BY booked_at DESC, booking_id DESC LIMIT 8');
 
 $tiles = [
     ['Total Revenue', money($revenue), 'fa-money', 1, 'Net of refunds paid'],

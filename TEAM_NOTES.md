@@ -45,7 +45,8 @@ The movie catalog comes from TMDB. Each developer seeds their own database:
    docker compose exec -T db mysqldump -uroot dbmo > backup.sql
    docker compose exec web php database/seed_tmdb.php --yes
    ```
-   It replaces all movies, shows, prices, coming soon, bookings, refunds, reviews and favorites. Users, admins, cinemas, snacks and promo codes stay. Re-run it any time to refresh "now playing". Downloaded posters (`Admin/upload-images/tmdb_*`) are git-ignored.
+   It replaces all movies, shows, prices, coming soon, bookings, refunds, reviews and favorites.
+4. Optional demo data so the admin panel isn't empty: `docker compose exec web php database/seed_demo.php`. It adds 8 customers (`*@demo.example.com`, password `123`, one Blocked), a few past shows, ~24 bookings over the last week (checked in, upcoming, cancelled with Pending/Refunded/Rejected refunds), snacks, promo use, 5 reviews and 4 favorites. Re-running replaces only its own demo rows. Run it again after every `seed_tmdb.php --yes`, because that wipes bookings. Users, admins, cinemas, snacks and promo codes stay. Re-run it any time to refresh "now playing". Downloaded posters (`Admin/upload-images/tmdb_*`) are git-ignored.
 
 ## Helpers you can use
 

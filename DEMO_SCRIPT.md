@@ -11,7 +11,7 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
    docker compose exec -T db mysql -uroot dbmo < database/migrations/002_rafay_refund_reason.sql
    docker compose exec -T db mysql -uroot dbmo < database/migrations/003_rafay_admin_email.sql
    ```
-3. Refresh the catalog from TMDB the day before the demo: apply `005_rafay_tmdb.sql`, back up, then run `docker compose exec web php database/seed_tmdb.php --yes` (key in `includes/secrets.php`, see TEAM_NOTES "TMDB catalog"). This loads the latest now-playing movies, creates shows for the next 7 days (some within 24 hours, to show the 50% refund) and clears old bookings.
+3. Refresh the catalog from TMDB the day before the demo: apply `005_rafay_tmdb.sql`, back up, then run `docker compose exec web php database/seed_tmdb.php --yes` (key in `includes/secrets.php`, see TEAM_NOTES "TMDB catalog"). This loads the latest now-playing movies, creates shows for the next 7 days (some within 24 hours, to show the 50% refund) and clears old bookings. Then run `docker compose exec web php database/seed_demo.php` so the dashboard, refunds, reports, reviews and activity log have realistic data.
 4. Accounts:
    - Customer: `Demo@outlook.com` / `123`
    - Second customer for the seat-hold demo: register one on Sign Up (needs Umair's signup fix), or run:
