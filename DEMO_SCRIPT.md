@@ -16,7 +16,7 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
    - Customer: `Demo@outlook.com` / `123`
    - Second customer for the seat-hold demo: register one on Sign Up (needs Umair's signup fix), or run:
      `docker compose exec db mysql -uroot dbmo -e "insert into user_reg_login (name,email,password) values ('Tester','tester@test.com','123')"`
-   - Admin: `admin@moviebooking.com` / `12345` at `/Admin/login.php`
+   - Admin: `admin@gmail.com` / `12345` at `/Admin/login.php`
 5. Open two browser windows: a normal one (customer), and a private one (admin, and later the second customer).
 
 ## 1. Browse, filter, live search

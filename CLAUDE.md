@@ -19,7 +19,7 @@ docker compose exec db mysql -uroot dbmo
 - `config.php` and `Admin/config.php` read the DB host from the `DB_HOST` env var (set to `db` by compose), falling back to `localhost` for XAMPP-style local runs. Credentials (`root`, empty password, db `dbmo`) are hardcoded.
 - On this machine `localhost:8080` via curl returned nothing right after startup; `127.0.0.1:8080` worked.
 
-Seed logins (from `dbmo.sql`): user `Demo@outlook.com` / `123`; admin `admin@moviebooking.com` / `12345` at `/Admin/login.php`.
+Seed logins (from `dbmo.sql`): user `Demo@outlook.com` / `123`; admin `admin@gmail.com` / `12345` at `/Admin/login.php`.
 
 ## Architecture
 

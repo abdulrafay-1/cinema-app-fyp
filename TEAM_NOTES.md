@@ -26,7 +26,7 @@ Seed shows are created relative to the day you run the migration (next 7 days). 
 |---|---|---|
 | 001_shared_schema.sql | Rafay | new columns on booking_details / user_reg_login / addmovie, all new tables, seed data |
 | 002_rafay_refund_reason.sql | Rafay | `booking_details.refund_reason`, `refund_processed_at` (admin refund decisions) |
-| 003_rafay_admin_email.sql | Rafay | seed admin login renamed to `admin@moviebooking.com` (password unchanged: `12345`) |
+| 003_rafay_admin_email.sql | Rafay | seed admin login renamed to `admin@gmail.com` (password unchanged: `12345`). Safe to re-run; re-run it if you applied it before 7 Oct |
 
 Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
 

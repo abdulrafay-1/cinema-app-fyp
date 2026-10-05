@@ -1,1 +1,1 @@
-UPDATE admin_login SET email = 'admin@moviebooking.com' WHERE id = 2;
+UPDATE admin_login SET email = 'admin@gmail.com' WHERE id = 2;
