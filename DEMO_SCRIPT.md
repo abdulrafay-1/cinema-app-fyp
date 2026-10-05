@@ -11,7 +11,7 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
    docker compose exec -T db mysql -uroot dbmo < database/migrations/002_rafay_refund_reason.sql
    docker compose exec -T db mysql -uroot dbmo < database/migrations/003_rafay_admin_email.sql
    ```
-3. Seed shows are dated from the day 001 was applied. If that was more than a few days ago, add fresh shows in **Admin → Shows** (step 10 below) for the movies you'll demo. At least one show should be **less than 24 hours away**, to show the 50% refund.
+3. Refresh the catalog from TMDB the day before the demo: apply `005_rafay_tmdb.sql`, back up, then run `docker compose exec web php database/seed_tmdb.php --yes` (key in `includes/secrets.php`, see TEAM_NOTES "TMDB catalog"). This loads the latest now-playing movies, creates shows for the next 7 days (some within 24 hours, to show the 50% refund) and clears old bookings.
 4. Accounts:
    - Customer: `Demo@outlook.com` / `123`
    - Second customer for the seat-hold demo: register one on Sign Up (needs Umair's signup fix), or run:
@@ -21,14 +21,14 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
 
 ## 1. Browse, filter, live search
 1. Home page → scroll to **Now Showing & All Movies**.
-2. Type `bla` in **Search** → suggestions appear (Black Adam, Black Panther). Press ↓ and Enter to open one, or click it.
-3. Back on Home: pick **Genre = Entertainment**. The grid reloads (4 movies). Then pick **Language = English** (2 movies). Click **✕** to clear.
-4. Pick **Cinema = Raiha Cinegold Plex**. Only movies with upcoming shows there are listed.
-5. Scroll down to **Coming Soon** (from the `coming_soon` table, with a "In N days" badge).
-6. Menu **Movies Categories → Hollywood**. Same filters, limited to Hollywood.
+2. Type the first letters of a title in **Search** (e.g. `res` for Resident Evil) → poster suggestions appear. Press ↓ and Enter to open one, or click it.
+3. Back on Home: pick **Genre = Action**. The grid reloads. Then pick **Language = Hindi** to narrow it further. Click **✕** to clear.
+4. Pick any **Cinema**. Only movies with upcoming shows there are listed.
+5. Point out the home **slider** (TMDB backdrops with rating, year, genre, runtime and Book Now), the ⭐ ratings on cards, and **Coming Soon** (TMDB upcoming releases with "In N days" badges and trailer links).
+6. Menu **Movies Categories → Hollywood / Bollywood / Lollywood**. Same filters, limited to that industry (mapped from each movie's original language / country).
 
 ## 2. Pick a show
-1. On any movie card click **Book** (or `book_ticket.php?movbook=6`, the old link, which now redirects).
+1. On any movie card click **Book** (the old `book_ticket.php?movbook=<movie id>` link also still works and redirects).
 2. Point out the date tabs. Click another date, then click a showtime (each shows the hall and seats left).
 3. When logged out you land on **Sign in**. Log in as Demo and you return to the same seat map.
 

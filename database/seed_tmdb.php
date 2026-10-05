@@ -18,6 +18,12 @@ const INDUSTRY_BY_LANGUAGE = [
     'pt' => 'Portuguese', 'ko' => 'Korean', 'ja' => 'Japanese',
 ];
 
+const LANGUAGE_NAMES = [
+    'en' => 'English', 'hi' => 'Hindi', 'ur' => 'Urdu', 'pa' => 'Punjabi', 'ta' => 'Tamil', 'te' => 'Telugu',
+    'ml' => 'Malayalam', 'zh' => 'Chinese', 'cn' => 'Cantonese', 'pt' => 'Portuguese', 'ko' => 'Korean',
+    'ja' => 'Japanese', 'es' => 'Spanish', 'fr' => 'French', 'de' => 'German', 'it' => 'Italian',
+];
+
 $upload_dir = realpath(__DIR__ . '/../Admin/upload-images');
 
 function say($message)
@@ -88,10 +94,11 @@ try {
     say('Connected to TMDB. ' . count($genres) . ' genres.');
 
     $today = date('Y-m-d');
+    $recent = date('Y-m-d', strtotime('-120 days'));
     $seen = [];
     $groups = [
         'Hollywood' => collect('/movie/now_playing', ['language' => 'en-US', 'region' => 'US'], NOW_SHOWING_HOLLYWOOD, 3,
-            function ($m) { return ($m['original_language'] ?? '') === 'en'; }, $seen),
+            function ($m) use ($recent) { return ($m['original_language'] ?? '') === 'en' && ($m['release_date'] ?? '') >= $recent; }, $seen),
         'Bollywood' => collect('/discover/movie', [
             'with_original_language' => 'hi', 'sort_by' => 'popularity.desc', 'include_adult' => 'false',
             'primary_release_date.gte' => date('Y-m-d', strtotime('-150 days')), 'primary_release_date.lte' => $today,
@@ -101,7 +108,7 @@ try {
             'primary_release_date.gte' => date('Y-m-d', strtotime('-3 years')), 'primary_release_date.lte' => $today,
         ], NOW_SHOWING_LOLLYWOOD, 2, function () { return true; }, $seen),
     ];
-    $upcoming = collect('/movie/upcoming', ['language' => 'en-US', 'region' => 'US'], COMING_SOON, 3,
+    $upcoming = collect('/movie/upcoming', ['language' => 'en-US', 'region' => 'US'], COMING_SOON + 6, 3,
         function ($m) use ($today) { return ($m['release_date'] ?? '') > $today; }, $seen);
     foreach ($groups as $name => $list) {
         say(sprintf('%-10s %d movies', $name, count($list)));
@@ -127,7 +134,13 @@ try {
 
     $soon = [];
     foreach ($upcoming as $basic) {
+        if (count($soon) >= COMING_SOON) {
+            break;
+        }
         $d = tmdb_get('/movie/' . (int) $basic['id'], ['language' => 'en-US', 'append_to_response' => 'videos']);
+        if (($d['release_date'] ?? '') <= $today) {
+            continue;
+        }
         $poster = 'tmdb_' . (int) $d['id'] . '.jpg';
         if (!tmdb_download($d['poster_path'] ?? $basic['poster_path'], 'w500', $upload_dir . '/' . $poster)) {
             continue;
@@ -161,7 +174,7 @@ try {
     foreach ($movies as $rank => $m) {
         $d = $m['d'];
         $lang_code = $d['original_language'] ?? 'en';
-        $lang_name = strtoupper($lang_code);
+        $lang_name = LANGUAGE_NAMES[$lang_code] ?? strtoupper($lang_code);
         foreach ($d['spoken_languages'] ?? [] as $spoken) {
             if (($spoken['iso_639_1'] ?? '') === $lang_code) {
                 $lang_name = $spoken['english_name'] ?: $lang_name;
@@ -231,6 +244,10 @@ try {
             ]
         );
     }
+
+    db_query('DELETE FROM genre WHERE gen_id NOT IN (SELECT movie_genre_id FROM addmovie)');
+    db_query('DELETE FROM language WHERE lang_id NOT IN (SELECT movie_lang_id FROM addmovie)');
+    db_query('DELETE FROM date WHERE date_id NOT IN (SELECT movie_date_id FROM addmovie)');
 
     db_query(
         'INSERT INTO activity_log (admin_email, action, details) VALUES (?, ?, ?)',
