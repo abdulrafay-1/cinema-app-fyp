@@ -89,3 +89,36 @@
   .cu-rating-big .cu-score { font-size: 28px; }
   .cu-star-input label { font-size: 26px; }
 }
+
+/* about / faq / pricing */
+.cu-lead { color: rgba(255, 255, 255, .85); font-size: 16px; line-height: 1.7; }
+.cu-section-title { color: #fff; font-family: 'Ubuntu', sans-serif; font-size: 22px; margin: 10px 0 14px; }
+.cu-section-title i { color: var(--cx-pink); margin-right: 6px; }
+.cu-feature i { font-size: 26px; color: var(--cx-pink); margin-bottom: 10px; }
+.cu-feature h4 { color: #fff; font-size: 17px; margin: 0 0 6px; font-family: 'Ubuntu', sans-serif; }
+.cu-feature p { color: var(--cx-muted); font-size: 14px; margin: 0; line-height: 1.6; }
+.cu-tech { display: flex; gap: 14px; align-items: flex-start; }
+.cu-tech i { font-size: 28px; color: var(--cx-pink); width: 34px; text-align: center; }
+.cu-tech strong { display: block; color: #fff; }
+.cu-tech span { color: var(--cx-muted); font-size: 13px; }
+.cu-team { display: flex; gap: 16px; align-items: flex-start; }
+.cu-team h4 { color: #fff; margin: 0; font-family: 'Ubuntu', sans-serif; }
+.cu-team .cu-role { color: var(--cx-pink); font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.cu-team p { color: var(--cx-muted); font-size: 14px; margin: 0; line-height: 1.6; }
+
+.cu-faq details { padding: 0; margin-bottom: 12px; }
+.cu-faq summary { list-style: none; cursor: pointer; padding: 16px 48px 16px 20px; color: #fff; font-weight: 600; font-size: 16px; position: relative; }
+.cu-faq summary::-webkit-details-marker { display: none; }
+.cu-faq summary::after { content: '+'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 22px; color: var(--cx-pink); }
+.cu-faq details[open] summary::after { content: '\2212'; }
+.cu-faq details[open] summary { border-bottom: 1px solid var(--cx-line); }
+.cu-faq details p { margin: 0; padding: 14px 20px 18px; color: rgba(255, 255, 255, .8); line-height: 1.7; }
+.cu-faq details a, .cu-price-table a { color: var(--cx-pink); }
+
+.cu-price-table td:not(:first-child), .cu-price-table th:not(:first-child) { white-space: nowrap; }
+
+@media (max-width: 575px) {
+  .cu-team { flex-direction: column; }
+  .cu-faq summary { font-size: 15px; padding: 14px 42px 14px 16px; }
+  .cu-price-table th, .cu-price-table td { font-size: 13px; padding: 8px 6px; }
+}

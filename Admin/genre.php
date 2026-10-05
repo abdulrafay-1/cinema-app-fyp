@@ -19,6 +19,7 @@ include('admin_header.php');
                   <div class="title"><strong>Genre</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Genre Name</label>
                         <div class="col-sm-9">
@@ -62,7 +63,8 @@ include('admin_header.php');
 
 
 
-if(isset($_POST['genre_btn'])){
+if(isset($_POST['genre_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['genre_btn'])){
 
   $genre_type=$_POST['genre_name'];
 
@@ -102,7 +104,7 @@ if(isset($_POST['genre_btn'])){
                                     <th scope='row'>  $genre_data[gen_id]</th>
                                     <td> $genre_data[genre_name] </td>
                                      <td>
-                                        <a href='gen_del.php?gen=$genre_data[gen_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='gen_del.php?gen=$genre_data[gen_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                      </td>
                                 </tr>
                             </tbody>

@@ -36,6 +36,7 @@ foreach($edit_movie_select as $edit_movie)
                   <div class="title"><strong>Update Movies</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Movies Name</label>
                         <div class="col-sm-9">
@@ -86,7 +87,8 @@ foreach($edit_movie_select as $edit_movie)
               <?php 
               
               
-              if(isset($_POST['edit_add_movie_btn']))
+              if(isset($_POST['edit_add_movie_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['edit_add_movie_btn']))
               {
                   $addmovie_edit_id=$_POST['movie_edit_id'];
                   $edit_mov_name=$_POST['edit_movie_name'];
@@ -109,7 +111,7 @@ foreach($edit_movie_select as $edit_movie)
                       else
                       {
                           $image_ok=false;
-                          echo "<script>alert('Please upload a JPG, PNG, GIF or WEBP poster.');</script>";
+                          echo swal_script('error', 'Please upload a JPG, PNG, GIF or WEBP poster.');
                       }
                   }
 

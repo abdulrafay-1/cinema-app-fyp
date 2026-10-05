@@ -4,7 +4,7 @@
         <footer class="footer">
           <div class="footer__block block no-margin-bottom">
             <div class="container-fluid text-center">
-               <p class="no-margin-bottom">2023 &copy; Online Movie Booking System.</p>
+               <p class="no-margin-bottom">&copy; 2026 CineMax Karachi. Admin panel.</p>
             </div>
           </div>
         </footer>

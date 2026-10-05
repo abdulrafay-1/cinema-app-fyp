@@ -18,6 +18,7 @@ include('admin_header.php');
                   <div class="title"><strong>Industry</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Industry Name</label>
                         <div class="col-sm-9">
@@ -47,7 +48,8 @@ include('admin_header.php');
 
 
 
-if(isset($_POST['indus_btn'])){
+if(isset($_POST['indus_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['indus_btn'])){
 
   $indus_type=$_POST['indus_name'];
 
@@ -87,7 +89,7 @@ if(isset($_POST['indus_btn'])){
                                     <th scope='row'>  $industry_data[indus_id]</th>
                                     <td> $industry_data[industry_name] </td>
                                      <td>
-                                        <a href='indus_del.php?ind=$industry_data[indus_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='indus_del.php?ind=$industry_data[indus_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                      </td>
                                 </tr>
                             </tbody>

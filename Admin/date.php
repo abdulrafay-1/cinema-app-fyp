@@ -18,6 +18,7 @@ include('admin_header.php');
                   <div class="title"><strong>Cinemas Dates</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Cinema Date</label>
                         <div class="col-sm-9">
@@ -38,7 +39,8 @@ include('admin_header.php');
 
 
 
-if(isset($_POST['date_btn'])){
+if(isset($_POST['date_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['date_btn'])){
 
   $date_type=$_POST['date_sel'];
 
@@ -78,7 +80,7 @@ if(isset($_POST['date_btn'])){
                                     <th scope='row'>  $date_data[date_id]</th>
                                     <td> $date_data[date_name] </td>
                                      <td>
-                                        <a href='date_del.php?dat=$date_data[date_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='date_del.php?dat=$date_data[date_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                      </td>
                                 </tr>
                             </tbody>

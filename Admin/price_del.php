@@ -1,6 +1,13 @@
 <?php
 include('auth.php');
 require_once __DIR__ . '/../includes/admin_functions.php';
+require_once __DIR__ . '/admin_alert.php';
+
+// the delete link carries the CSRF token, so another website can't trigger a delete
+if (!hash_equals(csrf_token(), (string) ($_GET['csrf'] ?? ''))) {
+    echo swal_page('error', 'Invalid request. Please reload the page and try again.', 'price.php');
+    exit;
+}
 
 $price_delete_id=isset($_GET['pr']) ? $_GET['pr'] : '';
 
@@ -8,12 +15,7 @@ $price_delete_id=isset($_GET['pr']) ? $_GET['pr'] : '';
 try {
     $deleted=db_query("delete from movie_price where price_id=?", 'i', [$price_delete_id]);
 } catch (mysqli_sql_exception $ex) {
-    echo "
-    <script>
-    alert('This price row could not be deleted. Try again.');
-    window.location.assign('price.php');
-    </script>
-    ";
+    echo swal_page('error', 'This price row could not be deleted. Try again.', 'price.php');
     exit;
 }
 
@@ -28,11 +30,6 @@ if($deleted>0)
     ";
 }
 else{
-    echo "
-    <script>
-    alert('Something Went Wrong Try Another Time!');
-    window.location.assign('price.php');
-    </script>
-    ";
+    echo swal_page('error', 'Something Went Wrong Try Another Time!', 'price.php');
 }
 ?>

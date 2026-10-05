@@ -14,7 +14,10 @@ if(isset($_POST['btn_signup'])){
     $ux_pass=$_POST['password'] ?? '';
     $ux_recheck=$_POST['re_pass'] ?? '';
 
-    if($ux_name=='' || $ux_email=='' || $ux_pass==''){
+    if(!csrf_ok()){
+        $signup_error='Invalid request. Please reload the page and try again.';
+    }
+    else if($ux_name=='' || $ux_email=='' || $ux_pass==''){
         $signup_error='Please fill in all fields.';
     }
     else if(!filter_var($ux_email, FILTER_VALIDATE_EMAIL)){
@@ -55,6 +58,7 @@ include('header.php');
 					<div class="sign__content">
 						<!-- registration form -->
 						<form action="" class="sign__form" method="post">
+							<?php echo csrf_field(); ?>
 
                             <div class="sign__group">
                                   <h3 class="text-white">Registration</h3>
@@ -84,7 +88,7 @@ include('header.php');
 
 							<div class="sign__group sign__group--checkbox">
 								<input id="remember" name="remember" type="checkbox" checked="checked">
-								<label for="remember">I agree to the <a href="#">Privacy Policy</a></label>
+								<label for="remember">I agree to the <a href="faq.php" target="_blank">booking and refund rules</a></label>
 							</div>
 
 							<button class="sign__btn" type="submit" name="btn_signup">Sign up</button>
@@ -99,11 +103,12 @@ include('header.php');
 	</div>
 
 <?php if($signup_done){ ?>
+	<!-- SweetAlert2 is loaded in header.php; after OK the user goes to sign in -->
 	<script>
-       alert("Now Please Log In With Your Email and Password")
+       Swal.fire({icon: 'success', title: 'Account created!', text: 'Now please log in with your email and password.', confirmButtonColor: '#ff5860'})
+           .then(function () { window.location.assign('signin.php'); });
 	</script>
-
-	<meta http-equiv="refresh" content="0; URL=signin.php"/>
+	<noscript><meta http-equiv="refresh" content="0; URL=signin.php"/></noscript>
 <?php } ?>
 
 

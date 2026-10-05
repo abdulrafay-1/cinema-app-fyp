@@ -1,5 +1,6 @@
 <?php 
 session_start();
+require_once __DIR__ . '/admin_alert.php';
 include('config.php');
 
 
@@ -12,7 +13,7 @@ include('config.php');
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Admin - Online Movie Booking System</title>
+    <title>Admin - CineMax Karachi</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
@@ -150,6 +151,8 @@ include('config.php');
          }
        }
     </style>
+    <!-- SweetAlert2 popups -->
+    <script src="<?php echo SWAL_CDN; ?>"></script>
   </head>
 
 
@@ -168,7 +171,7 @@ include('config.php');
               <div class="info d-flex align-items-center" style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%);">
                 <div class="content">
                   <div class="logo">
-                    <h1 class="mb-3" style="font-family:Verdana;font-weight:400;text-transform:uppercase ;">Online Movie Booking System Admin Login</h1>
+                    <h1 class="mb-3" style="font-family:Verdana;font-weight:400;text-transform:uppercase ;">CineMax Karachi Admin Login</h1>
                   </div>
                   <p class="h2" style="color:black;">Enter Your Email and Password To get access of Admin Panel Dashboard!</p>
                 </div>
@@ -188,7 +191,7 @@ include('config.php');
                       <label for="login-password" class="label-material">Password</label>
                     </div>
                     <button id="login" type="submit" name="admin_btn" class="btn btn-primary" style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%);">Login</button>
-                  </form><a href="#" class="forgot-pass">Forgot Password?</a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -196,7 +199,7 @@ include('config.php');
         </div>
       </div>
       <div class="copyrights text-center">
-         <p>2023 &copy; Online Movie Booking System.</p>
+         <p>&copy; 2026 CineMax Karachi. Admin panel.</p>
       </div>
     </div>
 
@@ -232,7 +235,7 @@ if(mysqli_num_rows($admin_login_result)>0){
 }
 else{
 
-  echo '<script>alert("Invalid Email Or Password!")</script>';
+  echo swal_script('error', 'Invalid Email Or Password!');
 
 }
 

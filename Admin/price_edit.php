@@ -40,6 +40,7 @@ foreach($edit_price_select as $edit_movie_pr)
                   <div class="title"><strong>Seat Details</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Select Movie</label>
                         <div class="col-sm-9">
@@ -78,7 +79,8 @@ foreach($edit_price_select as $edit_movie_pr)
 
 
                     
-                    if(isset($_POST['movie_price_btn_edited'])){
+                    if(isset($_POST['movie_price_btn_edited']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['movie_price_btn_edited'])){
                     
                       $movie_price_edit_id=$_POST['edit_price_id'];
                       $movie_type_edited=$_POST['movie_name_edited'];
@@ -87,7 +89,11 @@ foreach($edit_price_select as $edit_movie_pr)
                       $movie_frt_edited=$_POST['movie_select_frt_edited'];
                     
                     // update query: the WHERE makes it change only this movie's row (before, it overwrote every row)
-                      $movie_price_update=db_query("update movie_price set movie_name_price=?,economy=?,business=?,first_class=? where price_id=?", 'ssssi', [$movie_type_edited,$movie_eco_edited,$movie_bus_edited,$movie_frt_edited,$movie_price_edit_id]);
+                      // prices must be whole rupees: checkout adds them up as numbers
+                      $movie_price_update=false;
+                      if(ctype_digit(trim($movie_eco_edited)) && ctype_digit(trim($movie_bus_edited)) && ctype_digit(trim($movie_frt_edited))){
+                        $movie_price_update=db_query("update movie_price set movie_name_price=?,economy=?,business=?,first_class=? where price_id=?", 'ssssi', [$movie_type_edited,trim($movie_eco_edited),trim($movie_bus_edited),trim($movie_frt_edited),$movie_price_edit_id]);
+                      }
 
 
                       if($movie_price_update!==false)
@@ -101,11 +107,7 @@ foreach($edit_price_select as $edit_movie_pr)
                          }
                          else
                          {
-                             echo "
-                         <script>
-                         alert('Something Went Wrong Try Another Time!');
-                         </script>
-                         ";
+                             echo swal_script('error', 'Prices must be whole numbers in rupees, e.g. 1100.');
                          }
                     
                     }
@@ -149,7 +151,7 @@ foreach($edit_price_select as $edit_movie_pr)
                                     <td> $movie_price_data[business] </td>
                                     <td> $movie_price_data[first_class] </td>
                                      <td>
-                                        <a href='price_del.php?pr=$movie_price_data[price_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='price_del.php?pr=$movie_price_data[price_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                      </td>
                                 </tr>
                             </tbody>

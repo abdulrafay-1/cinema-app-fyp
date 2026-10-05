@@ -42,6 +42,7 @@ foreach($edit_cin_select as $edit_cinema)
 
 
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
 
 
                     <div class="form-group row">
@@ -77,7 +78,8 @@ foreach($edit_cin_select as $edit_cinema)
 
 
 
-if(isset($_POST['edit_cinema_btn'])){
+if(isset($_POST['edit_cinema_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['edit_cinema_btn'])){
 
  $cin_id=$_POST['edit_id'];
   $cin_name=$_POST['edit_cinema_n'];
@@ -98,11 +100,7 @@ if($cin_edit_result!==false)
     }
     else
     {
-        echo "
-    <script>
-    alert('Something Went Wrong Try Another Time!');
-    </script>
-    ";
+        echo swal_script('error', 'Something Went Wrong Try Another Time!');
     }
 
 }
@@ -137,7 +135,7 @@ if($cin_edit_result!==false)
                                     <td> $cinema_data[cinema_name] </td>
                                     <td>$cinema_data[cinema_location] </td>
                                      <td>
-                                        <a href='cin_del.php?Cin=$cinema_data[cin_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='cin_del.php?Cin=$cinema_data[cin_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a href='cin_edit.php?Cin=$cinema_data[cin_id]'><i class='fa fa-pencil btn'></i></a>
                                      </td>

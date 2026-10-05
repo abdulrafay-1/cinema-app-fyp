@@ -1,5 +1,39 @@
 <?php
 include('header.php');
+
+// what the project does, shown as cards (edit the text here)
+$customer_features = [
+    ['fa-search', 'Browse & search', 'Filter movies by genre, language and cinema, with live search suggestions and a Coming Soon list.'],
+    ['fa-couch', 'Seat map', 'Pick seats on a live map: Economy, Business and First class rows, each with its own price.'],
+    ['fa-lock', 'Fair seat holds', 'Chosen seats are held for 5 minutes, so two people can never buy the same seat.'],
+    ['fa-hamburger', 'Snacks & promo codes', 'Add popcorn and drinks at checkout and apply discount codes such as EID20.'],
+    ['fa-qrcode', 'E-ticket with QR', 'Pay by card, JazzCash or Easypaisa (demo) and get a printable e-ticket with a QR code.'],
+    ['fa-undo', 'Cancel & refund', 'Cancel from My Bookings: full refund up to 24 hours before the show, 50% after that.'],
+    ['fa-star', 'Reviews & favorites', 'Rate movies with 1 to 5 stars, write a review and save favorites.'],
+    ['fa-user-circle', 'Your account', 'Profile with photo, loyalty points, password change, booking history and a contact form.'],
+];
+$admin_features = [
+    ['fa-chart-line', 'Dashboard & reports', 'Revenue, tickets and refunds at a glance, charts, and reports you can export to CSV.'],
+    ['fa-film', 'Movies & shows', 'Add movies with posters and descriptions, schedule shows per cinema and hall.'],
+    ['fa-ticket-alt', 'Bookings & refunds', 'Search all bookings, approve or reject refund requests with a reason.'],
+    ['fa-camera', 'Ticket scanner', 'Scan the QR code at the door: valid, already used or cancelled.'],
+    ['fa-tags', 'Snacks & promo codes', 'Manage the snack menu and discount codes with usage limits and expiry dates.'],
+    ['fa-users', 'Users & moderation', 'Block or unblock customers, hide unwanted reviews, read contact messages.'],
+    ['fa-history', 'Activity log', 'Every admin add, edit and delete is recorded with who did it and when.'],
+    ['fa-shield-alt', 'Secure by design', 'Login-protected admin pages, prepared SQL statements and CSRF tokens on every form.'],
+];
+$tech = [
+    ['fab fa-php', 'PHP 8.2', 'Server-side pages (also runs on PHP 7.4)'],
+    ['fas fa-database', 'MySQL / MariaDB', 'Database "dbmo" accessed with mysqli prepared statements'],
+    ['fab fa-bootstrap', 'Bootstrap 5 & 4', 'Responsive layout (FlixGo customer theme, Bootstrapious admin theme)'],
+    ['fab fa-js', 'JavaScript & jQuery', 'Seat map, live search, countdown timer, SweetAlert2 popups'],
+    ['fas fa-chart-pie', 'Chart.js', 'Admin dashboard charts'],
+    ['fas fa-server', 'XAMPP / Docker', 'Apache web server, runs locally on XAMPP or in Docker'],
+];
+$team = [
+    ['Abdul Rafay', 'Core booking system', 'Database design, shows, seat map and seat holds, checkout, payment, e-tickets and QR scanner, cancellations and refunds, dashboard, reports and search.'],
+    ['Umair', 'Admin management & customer pages', 'Admin pages for movies, prices, snacks, promo codes, coming soon, users, reviews, messages and activity log; sign up, profile, favorites, reviews, contact and site pages.'],
+];
 ?>
 
 <!-- page title -->
@@ -26,134 +60,86 @@ include('header.php');
 	</section>
 	<!-- end page title -->
 
-	<!-- about -->
-	<section class="section">
-		<div class="container">
-			<div class="row">
-				<!-- section title -->
-				<div class="col-12">
-					<h2 class="section__title"><b>Online Movie Booking System</b> – Best Place for Booking Movies</h2>
-				</div>
-				<!-- end section title -->
+<div class="container cx-page" style="margin-top:40px;">
 
-				<!-- section text -->
-				<div class="col-12">
-					<p class="section__text">Being the largest, purpose-built and standalone multiplex chain of Pakistan, Online Movie Booking System promises its customers a grandiose and larger than life experience like never before. Having all its sites designed by world renowned cinema architects, Mesbur & Smith of Canada, and boasting top end 4K Digital projection systems custom designed by Christie Digital Canada, Online Movie Booking System continues to stand out in the entertainment and recreational sector.</p>
+  <!-- what it is -->
+  <div class="cx-card">
+    <h2 style="margin-top:0;"><?php echo e(SITE_NAME); ?>: online movie ticket booking</h2>
+    <p class="cu-lead"><?php echo e(SITE_NAME); ?> is a web application for booking cinema tickets in Karachi. Customers browse what's showing, choose a show, pick their exact seats on a seat map, add snacks, apply a promo code and pay. They instantly get an e-ticket with a QR code that the cinema scans at the door.</p>
+    <p class="cu-lead mb-0">Behind it is an admin panel where cinema staff manage movies, shows, prices, snacks and promo codes, handle refunds, moderate reviews and follow sales on a live dashboard.</p>
+  </div>
 
-					<p class="section__text section__text--last-with-margin">In addition to this, all the screens of this brand have been outfitted by Asia’s number one cinema integration company called Eugentek Corporation, which is a crowning achievement of years of planning and execution. Comprising of the latest 3D technology, custom designed Dolby 11.1 digital and sound systems for all theatre functionalities, <a href="#">Online Movie Booking System</a> continues to be years ahead of any other cinema nationwide.</p>
-				</div>
-				<!-- end section text -->
+  <!-- features -->
+  <h3 class="cu-section-title"><i class="fas fa-user"></i> For customers</h3>
+  <div class="row g-3 mb-4">
+    <?php foreach ($customer_features as $f): ?>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="cx-card cu-feature h-100 mb-0">
+          <i class="fas <?php echo $f[0]; ?>"></i>
+          <h4><?php echo e($f[1]); ?></h4>
+          <p><?php echo e($f[2]); ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-tv feature__icon"></i>
-						<h3 class="feature__title">Ultra HD</h3>
-						<p class="feature__text">All screens at Nueplex possess the first custom designed acoustics in Pakistan that have been designed by world beating acoustics named Valcoustics, Canada. Our brand continuously ensures that no expense or effort is spared in bringing a comfortable yet astounding experience to our patrons.</p>
-					</div>
-				</div>
-				<!-- end feature -->
+  <h3 class="cu-section-title"><i class="fas fa-user-shield"></i> For cinema staff (admin panel)</h3>
+  <div class="row g-3 mb-4">
+    <?php foreach ($admin_features as $f): ?>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="cx-card cu-feature h-100 mb-0">
+          <i class="fas <?php echo $f[0]; ?>"></i>
+          <h4><?php echo e($f[1]); ?></h4>
+          <p><?php echo e($f[2]); ?></p>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-film feature__icon"></i>
-						<h3 class="feature__title">Film</h3>
-						<p class="feature__text">From the custom-made seats, to the extremely well elevated halls, all our cinema models provide a majestic atmosphere that takes our customers away and disconnects them from the outside world. The grandeur of our expansive screens, the intimacy of our smaller screens, the luxury of our Royal screens, and the charm of our open-air screen, provide our customers with a wide range of Online Movie Booking System models and experiences to choose from. 
-       </p>
-					</div>
-				</div>
-				<!-- end feature -->
+  <!-- technologies -->
+  <h3 class="cu-section-title"><i class="fas fa-code"></i> Technologies used</h3>
+  <div class="cx-card">
+    <div class="row g-3">
+      <?php foreach ($tech as $t): ?>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="cu-tech">
+            <i class="<?php echo $t[0]; ?>"></i>
+            <div><strong><?php echo e($t[1]); ?></strong><span><?php echo e($t[2]); ?></span></div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-trophy feature__icon"></i>
-						<h3 class="feature__title">Awards</h3>
-						<p class="feature__text">Online Movie Booking System has not only changed the game of the cinema business, but it has had far reaching effects on the film and media businesses in Pakistan.</p>
-					</div>
-				</div>
-				<!-- end feature -->
+  <!-- team -->
+  <h3 class="cu-section-title"><i class="fas fa-users"></i> The team</h3>
+  <div class="row g-3">
+    <?php foreach ($team as $member): ?>
+      <div class="col-12 col-md-6">
+        <div class="cx-card h-100 mb-0 cu-team">
+          <?php echo avatar_html(['name' => $member[0], 'profile_pic' => null], 64); ?>
+          <div>
+            <h4><?php echo e($member[0]); ?></h4>
+            <div class="cu-role"><?php echo e($member[1]); ?></div>
+            <p><?php echo e($member[2]); ?></p>
+          </div>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-notifications feature__icon"></i>
-						<h3 class="feature__title">Notifications</h3>
-						<p class="feature__text">Enjoying one of the largest market shares of films, while also carrying the burden of the entire cinema industry, Online Movie Booking System is committed towards reviving the Pakistani industry and giving Pakistani content most screen space and time.</p>
-					</div>
-				</div>
-				<!-- end feature -->
+  <?php if (SITE_UNIVERSITY !== '' || SITE_SUPERVISOR !== ''): ?>
+    <p class="cx-muted text-center mt-4 mb-0">
+      Final Year Project<?php echo SITE_DEPARTMENT !== '' ? ', ' . e(SITE_DEPARTMENT) : ''; ?><?php echo SITE_UNIVERSITY !== '' ? ', ' . e(SITE_UNIVERSITY) : ''; ?><?php echo SITE_SUPERVISOR !== '' ? '. Supervisor: ' . e(SITE_SUPERVISOR) : ''; ?>.
+    </p>
+  <?php endif; ?>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-rocket feature__icon"></i>
-						<h3 class="feature__title">Rocket</h3>
-						<p class="feature__text"> Through Online Movie Booking System efforts of adding more and more screens, Pakistani producers overtime have gained the confidence to create more content.</p>
-					</div>
-				</div>
-				<!-- end feature -->
+  <div class="text-center mt-4">
+    <a href="index.php#movies" class="cx-btn"><i class="fas fa-film"></i> Browse movies</a>
+    <a href="contact.php" class="cx-btn cx-btn-ghost">Contact us</a>
+  </div>
+</div>
 
-				<!-- feature -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="feature">
-						<i class="icon ion-ios-globe feature__icon"></i>
-						<h3 class="feature__title">Multi Language Subtitles </h3>
-						<p class="feature__text">Being at the pinnacle of technology, design and art,Online Movie Booking System Cinemas is the standard by which all visual and aural presentation is judged. Our mission is simple, to provide the most remarkable cinema experience in the world right here in Pakistan. </p>
-					</div>
-				</div>
-				<!-- end feature -->
-			</div>
-		</div>
-	</section>
-	<!-- end about -->
-
-	<!-- how it works -->
-	<section class="section section--dark">
-		<div class="container">
-			<div class="row">
-				<!-- section title -->
-				<div class="col-12">
-					<h2 class="section__title section__title--no-margin">How it works?</h2>
-				</div>
-				<!-- end section title -->
-
-				<!-- how box -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="how">
-						<span class="how__number">01</span>
-						<h3 class="text-white">Create an account</h3>
-						<p class="how__text">Create an accouunt first.However, this is not the case with the new releases.</p>
-					</div>
-				</div>
-				<!-- ebd how box -->
-
-				<!-- how box -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="how">
-						<span class="how__number">02</span>
-						<h3 class="text-white">Choose your Plan</h3>
-						<p class="how__text">Choose which type of ticket plan you want.However, We have Different Classes.</p>
-					</div>
-				</div>
-				<!-- ebd how box -->
-
-				<!-- how box -->
-				<div class="col-12 col-md-6 col-lg-4">
-					<div class="how">
-						<span class="how__number">03</span>
-						<h3 class="text-white">Enjoy MovieGo</h3>
-						<p class="how__text">Enjoy your favourite Movie with friends and fanily.</p>
-					</div>
-				</div>
-				<!-- ebd how box -->
-			</div>
-		</div>
-	</section>
-	<!-- end how it works -->
-
-	
 <?php
 include('footer.php');
 ?>

@@ -23,6 +23,7 @@ include('admin_header.php');
 
 
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
 
 
                     <div class="form-group row">
@@ -57,7 +58,8 @@ include('admin_header.php');
 
 
 
-if(isset($_POST['cinema_btn'])){
+if(isset($_POST['cinema_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['cinema_btn'])){
 
   $cin_name=$_POST['cinema_n'];
   $cin_loc=$_POST['cinema_loc'];
@@ -101,7 +103,7 @@ if(isset($_POST['cinema_btn'])){
                                     <td> $cinema_data[cinema_name] </td>
                                     <td>$cinema_data[cinema_location] </td>
                                      <td>
-                                        <a href='cin_del.php?Cin=$cinema_data[cin_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='cin_del.php?Cin=$cinema_data[cin_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <a href='cin_edit.php?Cin=$cinema_data[cin_id]'><i class='fa fa-pencil btn'></i></a>
                                      </td>

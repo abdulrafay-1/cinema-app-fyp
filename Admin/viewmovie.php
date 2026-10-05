@@ -168,7 +168,7 @@ include('admin_header.php');
 
 
                                      <td>
-                                        <a href="delmovie_del.php?delmov=<?php echo $addmovie_data['movie_id']; ?>"><i class='fa fa-trash btn'></i></a>
+                                        <a href="delmovie_del.php?delmov=<?php echo $addmovie_data['movie_id']; ?>&csrf=<?php echo csrf_token(); ?>"><i class='fa fa-trash btn'></i></a>
                                         <a href="edit_movie_del.php?editmov=<?php echo $addmovie_data['movie_id']; ?>"><i class='fa fa-pencil btn'></i></a>
                                      </td>
                                 </tr>

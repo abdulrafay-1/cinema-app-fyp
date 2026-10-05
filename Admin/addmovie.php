@@ -18,6 +18,7 @@ include('admin_header.php');
                   <div class="title"><strong>Movies</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Movies Name</label>
                         <div class="col-sm-9">
@@ -165,7 +166,8 @@ include('admin_header.php');
               <?php 
               
               
-              if(isset($_POST['add_movie_btn']))
+              if(isset($_POST['add_movie_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['add_movie_btn']))
               {
                   // the "Select" options are disabled, so an unpicked dropdown is not sent at all
                   $mov_name=isset($_POST['movie_name']) ? trim($_POST['movie_name']) : '';
@@ -184,11 +186,11 @@ include('admin_header.php');
                   $allowed_ext=['jpg','jpeg','png','gif','webp'];
                   if($mov_name=='' || $mov_cinema=='' || $mov_genre=='' || $mov_industry=='' || $mov_lang=='' || $mov_date=='' || $mov_dur=='')
                   {
-                      echo "<script>alert('Please fill in the movie name and pick every dropdown.');</script>";
+                      echo swal_script('error', 'Please fill in the movie name and pick every dropdown.');
                   }
                   else if($mov_image=='' || !in_array(strtolower(pathinfo($mov_image, PATHINFO_EXTENSION)), $allowed_ext))
                   {
-                      echo "<script>alert('Please upload a JPG, PNG, GIF or WEBP poster.');</script>";
+                      echo swal_script('error', 'Please upload a JPG, PNG, GIF or WEBP poster.');
                   }
                   else
                   {
@@ -205,7 +207,7 @@ include('admin_header.php');
                       }
                       else
                       {
-                          echo "<script>alert('Something Went Wrong Try Another Time!');</script>";
+                          echo swal_script('error', 'Something Went Wrong Try Another Time!');
                       }
                   }
               }

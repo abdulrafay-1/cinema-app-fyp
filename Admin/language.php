@@ -19,6 +19,7 @@ include('admin_header.php');
                   <div class="title"><strong>Languages</strong></div>
                   <div class="block-body">
                     <form class="form-horizontal" method="post" action="">
+                    <?php echo csrf_field(); ?>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Language</label>
                         <div class="col-sm-9">
@@ -45,7 +46,8 @@ include('admin_header.php');
 
 
 
-if(isset($_POST['lang_btn'])){
+if(isset($_POST['lang_btn']) && !csrf_ok()){ echo swal_script('error', 'Invalid request. Please reload the page and try again.'); }
+                  else if(isset($_POST['lang_btn'])){
 
   $lang_type=$_POST['lang_name'];
 
@@ -85,7 +87,7 @@ if(isset($_POST['lang_btn'])){
                                     <th scope='row'>  $lang_data[lang_id]</th>
                                     <td> $lang_data[language_name] </td>
                                      <td>
-                                        <a href='lang_del.php?lang=$lang_data[lang_id]'><i class='fa fa-trash btn'></i></a>
+                                        <a href='lang_del.php?lang=$lang_data[lang_id]&csrf=" . csrf_token() . "'><i class='fa fa-trash btn'></i></a>
                                      </td>
                                 </tr>
                             </tbody>

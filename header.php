@@ -33,7 +33,7 @@ $nav_user = customer();
 	<link rel="stylesheet" href="css/default-skin.css">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="assets/booking.css?v=2">
-	<link rel="stylesheet" href="css/customer.css?v=2">
+	<link rel="stylesheet" href="css/customer.css?v=4">
 	<!-- Font Awesome 5, plus the v4 shim so old FA4 names (fa-pencil, fa-ticket, fa-clock-o) still show an icon -->
 	<link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
@@ -42,10 +42,12 @@ $nav_user = customer();
 
 	<!-- Favicons -->
      <link rel="shortcut icon" href="icon/favi.png" type="image/x-icon">
-	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<meta name="author" content="Dmitry Volkov">
-	<title>Online Movie Booking System – Online Movies, TV Shows & Cinema Booking</title>
+	<meta name="description" content="<?php echo e(SITE_NAME); ?>: book cinema tickets online in Karachi. Pick your show and seats, add snacks, pay and get an e-ticket with a QR code.">
+	<meta name="keywords" content="cinema, movie tickets, online booking, Karachi, <?php echo e(SITE_NAME); ?>">
+	<meta name="author" content="<?php echo e(SITE_TEAM); ?>">
+	<title><?php echo e(SITE_NAME); ?> – Online Movie Ticket Booking</title>
+	<!-- SweetAlert2 popups (same version Rafay uses on My Bookings) -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 	<!-- custom css for header -->
 <style>
      	.header__nav-link{
@@ -194,7 +196,7 @@ $nav_user = customer();
 							<!-- header logo -->
 							<img src="icon/main__logo.png" width=70 height=70  style="display:inline">
 							<a href="index.php" style="background-color:#2b2b31;">
-							<h6 id="main__logo">Online Movie <br> Booking System</h6>
+							<h6 id="main__logo">CineMax <br> Karachi</h6>
 							</a>
 							<!-- end header logo -->
 

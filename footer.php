@@ -1,118 +1,45 @@
 
-
-<section class="section">
-		<div class="container">
-			<div class="row">
-				<!-- section title -->
-				<div class="col-12">
-					<h2 class="section__title section__title--no-margin">Our Partners</h2>
-				</div>
-				<!-- end section title -->
-
-				<!-- section text -->
-				<div class="col-12">
-					<p class="section__text section__text--last-with-margin">Producing high-budget and high-quality content, fabricating genre-defining films, recognizing and launching new and unexplored talent in films, exploring newer territories, bringing state-of-the-art production facilities, communicating socially responsible stories, and most importantly working with the simple aim of reviving the Pakistani entertainment industry. JB Films is changing the way films are scripted, produced, and consumed in Pakistan.JB Films is committed to taking Pakistani talent and entertainment to the global stage and promises to lead as a key maker of modern cinema in Pakistan.</p>
-				</div>
-				<!-- end section text -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/jb__patner.jpeg" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/patner2.png" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/patner3.png" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/patner4.png" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/activeden-light-background.png" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-
-				<!-- partner -->
-				<div class="col-6 col-sm-4 col-md-3 col-lg-2">
-					<a href="#" class="partner">
-						<img src="img/partners/3docean-light-background.png" alt="" class="partner__img">
-					</a>
-				</div>
-				<!-- end partner -->
-			</div>
-		</div>
-	</section>
-
-	<!-- footer -->
+	<!-- footer: every link goes to a real page -->
 	<footer class="footer">
 		<div class="container">
 			<div class="row">
+				<!-- about -->
+				<div class="col-12 col-md-4">
+					<h6 class="footer__title"><?php echo e(SITE_NAME); ?></h6>
+					<p class="cx-muted" style="font-size:14px;line-height:1.7;margin-bottom:20px;">Book your cinema tickets online: choose a show, pick your seats, add snacks, pay and get an e-ticket with a QR code.</p>
+				</div>
+				<!-- end about -->
+
 				<!-- footer list -->
-				<div class="col-12 col-md-3">
-					<h6 class="footer__title">Download Our App</h6>
-					<ul class="footer__app">
-						<li><a href="#"><img src="img/Download_on_the_App_Store_Badge.svg" alt=""></a></li>
+				<div class="col-6 col-md-2">
+					<h6 class="footer__title">Explore</h6>
+					<ul class="footer__list">
+						<li><a href="index.php">Home</a></li>
+						<li><a href="index.php#movies">Movies</a></li>
+						<li><a href="pricing.php">Ticket Pricing</a></li>
+						<li><a href="userbooking.php">My Bookings</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
 
 				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Resources</h6>
+				<div class="col-6 col-md-2">
+					<h6 class="footer__title">Help</h6>
 					<ul class="footer__list">
 						<li><a href="about.php">About Us</a></li>
-						<li><a href="#">Pricing Plan</a></li>
-						<li><a href="faq.php">Help</a></li>
+						<li><a href="faq.php">FAQ</a></li>
+						<li><a href="contact.php">Contact</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
 
 				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Legal</h6>
-					<ul class="footer__list">
-						<li><a href="#">Terms of Use</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-						<li><a href="#">Security</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer list -->
-				<div class="col-12 col-sm-4 col-md-3">
+				<div class="col-12 col-md-4">
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
-						<li><a href="tel:+18002345678">+1 (92) 234-5678</a></li>
-						<li><a href="mailto:support@moviego.com">support@MovieBooking.com</a></li>
-					</ul>
-					<ul class="footer__social">
-						<li class="facebook"><a href="https://www.facebook.com/"><i class="icon ion-logo-facebook"></i></a></li>
-						<li class="instagram"><a href="https://www.instagram.com/"><i class="icon ion-logo-instagram"></i></a></li>
-						<li class="twitter"><a href="https://twitter.com/?lang=en"><i class="icon ion-logo-twitter"></i></a></li>
-						<li class="vk"><a href="https://pk.linkedin.com/"><i class="icon ion-logo-linkedin"></i></a></li>
+						<li><a href="<?php echo e(phone_link(CONTACT_PHONE)); ?>"><i class="fas fa-phone-alt" style="color:#ff55a5;width:18px;"></i> <?php echo e(CONTACT_PHONE); ?></a></li>
+						<li><a href="mailto:<?php echo e(CONTACT_EMAIL); ?>"><i class="fas fa-envelope" style="color:#ff55a5;width:18px;"></i> <?php echo e(CONTACT_EMAIL); ?></a></li>
+						<li class="cx-muted" style="font-size:14px;"><i class="fas fa-map-marker-alt" style="color:#ff55a5;width:18px;"></i> <?php echo e(CONTACT_ADDRESS); ?></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -120,11 +47,7 @@
 				<!-- footer copyright -->
 				<div class="col-12">
 					<div class="footer__copyright">
-					<small>2023 &copy; Online Movie Booking System.</small>
-						<ul>
-							<li><a href="#">Terms of Use</a></li>
-							<li><a href="#">Privacy Policy</a></li>
-						</ul>
+						<small>&copy; 2026 <?php echo e(SITE_NAME); ?>. Final Year Project by <?php echo e(SITE_TEAM); ?>.</small>
 					</div>
 				</div>
 				<!-- end footer copyright -->
@@ -132,6 +55,7 @@
 		</div>
 	</footer>
 	<!-- end footer -->
+
 
 	<!-- JS -->
 	<script src="./bootjs/bootstrap.min.js"></script>

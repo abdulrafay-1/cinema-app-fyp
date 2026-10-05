@@ -1,6 +1,13 @@
 <?php
 include('auth.php');
 require_once __DIR__ . '/../includes/admin_functions.php';
+require_once __DIR__ . '/admin_alert.php';
+
+// the delete link carries the CSRF token, so another website can't trigger a delete
+if (!hash_equals(csrf_token(), (string) ($_GET['csrf'] ?? ''))) {
+    echo swal_page('error', 'Invalid request. Please reload the page and try again.', 'industry.php');
+    exit;
+}
 
 $indus_delete_id=isset($_GET['ind']) ? $_GET['ind'] : '';
 
@@ -8,12 +15,7 @@ $indus_delete_id=isset($_GET['ind']) ? $_GET['ind'] : '';
 try {
     $deleted=db_query("delete from industry where indus_id=?", 'i', [$indus_delete_id]);
 } catch (mysqli_sql_exception $ex) {
-    echo "
-    <script>
-    alert('This industry is still used by movies. Delete those first.');
-    window.location.assign('industry.php');
-    </script>
-    ";
+    echo swal_page('warning', 'This industry is still used by movies. Delete those first.', 'industry.php');
     exit;
 }
 
@@ -28,11 +30,6 @@ if($deleted>0)
     ";
 }
 else{
-    echo "
-    <script>
-    alert('Something Went Wrong Try Another Time!');
-    window.location.assign('industry.php');
-    </script>
-    ";
+    echo swal_page('error', 'Something Went Wrong Try Another Time!', 'industry.php');
 }
 ?>

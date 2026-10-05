@@ -5,6 +5,25 @@ require_once __DIR__ . '/Admin/admin_upload.php';
 
 const PROFILE_UPLOAD_DIR = __DIR__ . '/uploads/profile/';
 
+// Site details: the ONE place to change the name and contact info shown in the header, footer and contact page.
+const SITE_NAME = 'CineMax Karachi';
+const SITE_TEAM = 'Umair and Abdul Rafay';
+const CONTACT_PHONE = '0300-0000000';
+const CONTACT_EMAIL = 'info@example.com';
+const CONTACT_ADDRESS = 'Karachi, Pakistan';
+const CONTACT_HOURS = 'Every day, 11:00 AM to 11:00 PM';
+// shown on the About page once filled in (left empty so no placeholder text appears on the site)
+const SITE_UNIVERSITY = '';
+const SITE_DEPARTMENT = '';
+const SITE_SUPERVISOR = '';
+
+// "0300-0000000" -> "+923000000000" for tel: links
+function phone_link($phone)
+{
+    $digits = preg_replace('/\D/', '', $phone);
+    return 'tel:' . (strpos($digits, '0') === 0 ? '+92' . substr($digits, 1) : '+' . $digits);
+}
+
 // The logged-in customer's row, or null for guests.
 // A user the admin has blocked is signed out here, so they can't keep using the site.
 function customer()

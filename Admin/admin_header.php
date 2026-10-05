@@ -2,6 +2,8 @@
 include('config.php');
 // gives every admin page e(), db_query() and log_activity()
 require_once __DIR__ . '/../includes/admin_functions.php';
+// SweetAlert2 popups (swal_script) for the admin pages
+require_once __DIR__ . '/admin_alert.php';
 
 // unread contact messages, shown as a badge next to "Messages" in the sidebar
 $admin_unread_row = db_one('SELECT COUNT(*) AS n FROM contact_messages WHERE is_read = 0');
@@ -17,7 +19,7 @@ $admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
   <head> 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Admin - Online Movie Booking System</title>
+    <title>Admin - CineMax Karachi</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
@@ -38,6 +40,8 @@ $admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    <!-- SweetAlert2 popups -->
+    <script src="<?php echo SWAL_CDN; ?>"></script>
   </head>
   <body>
     <header class="header">   
@@ -45,7 +49,7 @@ $admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
         <div class="container-fluid d-flex align-items-center justify-content-between">
           <div class="navbar-header">
             <!-- Navbar Header--><a href="dashboard.php" class="navbar-brand">
-              <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">Online Movie</strong> <strong>Booking System</strong></div>
+              <div class="brand-text brand-big visible text-uppercase"><strong class="text-primary">CineMax</strong> <strong>Karachi</strong></div>
               </a>
           </div>
             

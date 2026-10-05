@@ -1,11 +1,8 @@
 <?php
 require_once __DIR__ . '/customer_functions.php';
 
-// cinema contact details shown next to the form (placeholders: change them in one place here)
-const CONTACT_PHONE = '+92 21 3456 7890';
-const CONTACT_EMAIL = 'support@onlinemoviebooking.pk';
-const CONTACT_ADDRESS = 'Plot 21, Shahrah-e-Faisal, Karachi, Pakistan';
-const CONTACT_HOURS = 'Every day, 11:00 AM to 11:00 PM';
+// the contact details (CONTACT_PHONE, CONTACT_EMAIL, ...) are set once in customer_functions.php,
+// because the footer on every page shows them too
 
 $user = customer();
 $old = ['name' => $user['name'] ?? '', 'email' => $user['email'] ?? '', 'subject' => '', 'message' => ''];
@@ -92,7 +89,7 @@ include('header.php');
       <div class="cx-card h-100">
         <h3 style="margin-top:0;">Get in touch</h3>
         <ul class="cu-info">
-          <li><i class="fas fa-phone-alt"></i><div><div class="cx-muted" style="font-size:12px;">Phone</div><a href="tel:<?php echo e(preg_replace('/[^0-9+]/', '', CONTACT_PHONE)); ?>"><?php echo e(CONTACT_PHONE); ?></a></div></li>
+          <li><i class="fas fa-phone-alt"></i><div><div class="cx-muted" style="font-size:12px;">Phone</div><a href="<?php echo e(phone_link(CONTACT_PHONE)); ?>"><?php echo e(CONTACT_PHONE); ?></a></div></li>
           <li><i class="fas fa-envelope"></i><div><div class="cx-muted" style="font-size:12px;">Email</div><a href="mailto:<?php echo e(CONTACT_EMAIL); ?>"><?php echo e(CONTACT_EMAIL); ?></a></div></li>
           <li><i class="fas fa-map-marker-alt"></i><div><div class="cx-muted" style="font-size:12px;">Address</div><?php echo e(CONTACT_ADDRESS); ?></div></li>
           <li><i class="fas fa-clock"></i><div><div class="cx-muted" style="font-size:12px;">Box office hours</div><?php echo e(CONTACT_HOURS); ?></div></li>
