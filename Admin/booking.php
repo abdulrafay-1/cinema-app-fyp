@@ -3,15 +3,16 @@ include('auth.php');
 require_once __DIR__ . '/../includes/admin_functions.php';
 require_once __DIR__ . '/../includes/booking.php';
 
-function valid_date_param($value)
-{
-    $d = DateTime::createFromFormat('Y-m-d', (string) $value);
-    return ($d && $d->format('Y-m-d') === $value) ? $value : '';
-}
+$ranges = [
+    '3d' => ['Last 3 days', '-3 days'],
+    '7d' => ['Last 7 days', '-7 days'],
+    '1m' => ['Last 1 month', '-1 month'],
+    '6m' => ['Last 6 months', '-6 months'],
+    '1y' => ['Last 1 year', '-1 year'],
+];
 
 $f = [
-    'from' => valid_date_param($_GET['from'] ?? ''),
-    'to' => valid_date_param($_GET['to'] ?? ''),
+    'range' => isset($ranges[$_GET['range'] ?? '']) ? $_GET['range'] : '',
     'movie' => trim($_GET['movie'] ?? ''),
     'status' => in_array($_GET['status'] ?? '', ['Booked', 'Used', 'Cancelled'], true) ? $_GET['status'] : '',
     'q' => trim($_GET['q'] ?? ''),
@@ -20,8 +21,7 @@ $f = [
 $where = ['1 = 1'];
 $types = '';
 $params = [];
-if ($f['from']) { $where[] = 'b.booked_at >= ?'; $types .= 's'; $params[] = $f['from'] . ' 00:00:00'; }
-if ($f['to']) { $where[] = 'b.booked_at <= ?'; $types .= 's'; $params[] = $f['to'] . ' 23:59:59'; }
+if ($f['range']) { $where[] = 'b.booked_at >= ?'; $types .= 's'; $params[] = date('Y-m-d H:i:s', strtotime($ranges[$f['range']][1])); }
 if ($f['movie'] !== '') { $where[] = 'TRIM(b.user_movie_name) = ?'; $types .= 's'; $params[] = $f['movie']; }
 if ($f['status']) { $where[] = 'b.status = ?'; $types .= 's'; $params[] = $f['status']; }
 if ($f['q'] !== '') {
@@ -78,25 +78,26 @@ include('admin_header.php');
           <input type="text" name="q" class="form-control" value="<?php echo e($f['q']); ?>" placeholder="CNX-2026-00001">
         </div>
         <div class="form-group col-md-2">
-          <label class="form-control-label">Booked from</label>
-          <input type="date" name="from" class="form-control" value="<?php echo e($f['from']); ?>">
+          <label class="form-control-label">Booked</label>
+          <select name="range" class="form-control" onchange="this.form.submit()">
+            <option value="">All time</option>
+            <?php foreach ($ranges as $key => $range): ?>
+              <option value="<?php echo $key; ?>" <?php echo $f['range'] === $key ? 'selected' : ''; ?>><?php echo $range[0]; ?></option>
+            <?php endforeach; ?>
+          </select>
         </div>
-        <div class="form-group col-md-2">
-          <label class="form-control-label">Booked to</label>
-          <input type="date" name="to" class="form-control" value="<?php echo e($f['to']); ?>">
-        </div>
-        <div class="form-group col-md-2">
+        <div class="form-group col-md-3">
           <label class="form-control-label">Movie</label>
-          <select name="movie" class="form-control">
+          <select name="movie" class="form-control" onchange="this.form.submit()">
             <option value="">All movies</option>
             <?php foreach ($movies as $movie): ?>
               <option <?php echo $f['movie'] === $movie ? 'selected' : ''; ?>><?php echo e($movie); ?></option>
             <?php endforeach; ?>
           </select>
         </div>
-        <div class="form-group col-md-1">
+        <div class="form-group col-md-2">
           <label class="form-control-label">Status</label>
-          <select name="status" class="form-control">
+          <select name="status" class="form-control" onchange="this.form.submit()">
             <option value="">All</option>
             <?php foreach (['Booked', 'Used', 'Cancelled'] as $status): ?>
               <option <?php echo $f['status'] === $status ? 'selected' : ''; ?>><?php echo $status; ?></option>
