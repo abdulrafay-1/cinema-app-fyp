@@ -61,7 +61,7 @@ echo booking_css();
 
     <?php foreach ($by_cinema as $cinema_name => $cinema): ?>
       <div class="cx-card">
-        <h4 style="margin-bottom:2px;"><i class="fa fa-video-camera"></i> <?php echo e($cinema_name); ?></h4>
+        <h4 style="margin-bottom:2px;"><i class="fa fa-video"></i> <?php echo e($cinema_name); ?></h4>
         <p class="cx-muted" style="font-size:13px;"><?php echo e($cinema['location']); ?></p>
         <div class="cx-showtimes">
           <?php foreach ($cinema['shows'] as $show): ?>

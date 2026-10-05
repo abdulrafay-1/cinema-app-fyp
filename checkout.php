@@ -58,7 +58,7 @@ echo booking_css();
                   <span class="cx-badge" title="<?php echo e($seat['class']); ?>"><?php echo e($seat['label']); ?> &middot; <?php echo e($seat['class']); ?></span>
                 <?php endforeach; ?>
               </div>
-              <a href="seat_map.php?show_id=<?php echo (int) $show['show_id']; ?>" class="cx-muted" style="font-size:13px;display:inline-block;margin-top:8px;"><i class="fa fa-pencil"></i> Change seats</a>
+              <a href="seat_map.php?show_id=<?php echo (int) $show['show_id']; ?>" class="cx-muted" style="font-size:13px;display:inline-block;margin-top:8px;"><i class="fa fa-pencil-alt"></i> Change seats</a>
             </div>
           </div>
         </div>

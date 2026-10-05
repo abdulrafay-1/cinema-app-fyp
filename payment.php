@@ -102,8 +102,8 @@ echo booking_css();
           <input type="hidden" name="method" id="pay-method" value="<?php echo e($method); ?>">
           <div class="pay-tabs" role="tablist">
             <button type="button" class="pay-tab" data-method="Card"><i class="fa fa-credit-card"></i> Card</button>
-            <button type="button" class="pay-tab" data-method="JazzCash"><i class="fa fa-mobile"></i> JazzCash</button>
-            <button type="button" class="pay-tab" data-method="Easypaisa"><i class="fa fa-mobile"></i> Easypaisa</button>
+            <button type="button" class="pay-tab" data-method="JazzCash"><i class="fa fa-mobile-alt"></i> JazzCash</button>
+            <button type="button" class="pay-tab" data-method="Easypaisa"><i class="fa fa-mobile-alt"></i> Easypaisa</button>
           </div>
 
           <div class="pay-pane" data-pane="Card">

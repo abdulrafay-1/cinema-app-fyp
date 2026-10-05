@@ -91,5 +91,8 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
    <li><a href="reports.php"> <i class="fa fa-bar-chart"></i>Reports </a></li>
    ```
 
+9. **footer.php:** `img/google-play-badge.png` is referenced but missing, so every page logs a 404 in the console. Remove the badge or add the image.
+10. **Font Awesome:** header.php loads both FA 4.7 and FA 5.15. The FA5 sheet wins, so FA4-only names (`fa-pencil`, `fa-ticket`, `fa-video-camera`, `fa-clock-o`) render blank on public pages. Use FA5 names (`fa-pencil-alt`, `fa-ticket-alt`, `fa-video`, `fa-clock`).
+
 ### For Rafay
 (none yet)

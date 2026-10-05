@@ -3,7 +3,7 @@ $hold_timer_seconds = max(0, (int) $hold_timer_seconds);
 $hold_timer_back = 'seat_map.php?show_id=' . (int) $hold_timer_show_id;
 ?>
 <div class="cx-timer" id="hold-timer" role="timer" aria-live="polite">
-  <i class="fa fa-clock-o"></i> Seats held for <span id="hold-timer-left">--:--</span>
+  <i class="fa fa-clock"></i> Seats held for <span id="hold-timer-left">--:--</span>
 </div>
 <script>
 (function () {

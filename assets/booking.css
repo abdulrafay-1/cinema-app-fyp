@@ -88,8 +88,10 @@
 
 @media (max-width: 575px) {
   .cx-page { margin-top: 90px; }
-  .cx-seat { width: 24px; height: 22px; font-size: 8px; border-width: 1.5px; }
-  .cx-row { gap: 4px; }
+  .cx-seat { width: 20px; height: 20px; font-size: 8px; border-width: 1.5px; border-radius: 5px 5px 2px 2px; }
+  .cx-row { gap: 2px; }
+  .cx-seats { gap: 4px; }
+  .cx-row-label { width: 12px; font-size: 10px; }
   .cx-aisle { width: 8px; }
   .cx-card { padding: 14px; }
 }

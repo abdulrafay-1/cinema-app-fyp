@@ -168,7 +168,7 @@ function booking_css()
     }
     $done = true;
     $base = (strpos($_SERVER['SCRIPT_NAME'], '/Admin/') !== false) ? '../' : '';
-    return '<link rel="stylesheet" href="' . $base . 'assets/booking.css?v=1">';
+    return '<link rel="stylesheet" href="' . $base . 'assets/booking.css?v=2">';
 }
 
 function active_snacks()
@@ -383,4 +383,58 @@ function finalize_booking($user, $show, $snack_qty, $promo_code, $method, $accou
         return $fail('Could not complete your booking. Please try again.');
     }
     return ['ok' => true, 'booking_id' => $booking_id, 'booking_ref' => $ref];
+}
+
+function load_booking($ref)
+{
+    $booking = db_one(
+        "SELECT b.*, s.show_date, s.show_time, s.hall_name, c.cinema_location,
+                IF(s.show_id IS NULL, NULL, TIMESTAMP(s.show_date, s.show_time)) AS starts_at
+         FROM booking_details b
+         LEFT JOIN shows s ON s.show_id = b.show_id
+         LEFT JOIN cinema c ON c.cin_id = s.cin_id
+         WHERE b.booking_ref = ?",
+        's',
+        [strtoupper(trim((string) $ref))]
+    );
+    if (!$booking) {
+        return null;
+    }
+    $booking['seats'] = db_all(
+        'SELECT seat_label, seat_class, price FROM booking_seats WHERE booking_id = ? ORDER BY LEFT(seat_label, 1), CAST(SUBSTRING(seat_label, 2) AS UNSIGNED)',
+        'i',
+        [(int) $booking['booking_id']]
+    );
+    $booking['snacks'] = db_all(
+        'SELECT bs.qty, bs.price, sn.name FROM booking_snacks bs JOIN snacks sn ON sn.snack_id = bs.snack_id WHERE bs.booking_id = ?',
+        'i',
+        [(int) $booking['booking_id']]
+    );
+    return $booking;
+}
+
+function owns_booking($booking)
+{
+    $user_id = current_user_id();
+    if (!$booking || !$user_id) {
+        return false;
+    }
+    if ($booking['user_id'] !== null) {
+        return (int) $booking['user_id'] === $user_id;
+    }
+    return isset($_SESSION['ux_email']) && strcasecmp($booking['user_email'], $_SESSION['ux_email']) === 0;
+}
+
+function booking_when($booking)
+{
+    if ($booking['show_date']) {
+        return [show_date_label($booking['show_date']), show_time_label($booking['show_time'])];
+    }
+    return [$booking['user_date'], $booking['user_movie_dur']];
+}
+
+function status_badge($status)
+{
+    $map = ['Booked' => 'green', 'Used' => 'blue', 'Cancelled' => 'red', 'Pending' => 'orange', 'Refunded' => 'green', 'Rejected' => 'red'];
+    return '<span class="cx-badge cx-badge-' . ($map[$status] ?? 'grey') . '">' . e($status) . '</span>';
 }
