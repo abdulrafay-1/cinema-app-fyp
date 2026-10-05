@@ -25,7 +25,7 @@ $admin_features = [
 $tech = [
     ['fab fa-php', 'PHP 8.2', 'Server-side pages (also runs on PHP 7.4)'],
     ['fas fa-database', 'MySQL / MariaDB', 'Database "dbmo" accessed with mysqli prepared statements'],
-    ['fab fa-bootstrap', 'Bootstrap 5 & 4', 'Responsive layout (FlixGo customer theme, Bootstrapious admin theme)'],
+    ['fab fa-bootstrap', 'Bootstrap 5 & 4', 'Responsive layout for phones, tablets and desktops (customer site and admin panel)'],
     ['fab fa-js', 'JavaScript & jQuery', 'Seat map, live search, countdown timer, SweetAlert2 popups'],
     ['fas fa-chart-pie', 'Chart.js', 'Admin dashboard charts'],
     ['fas fa-server', 'XAMPP / Docker', 'Apache web server, runs locally on XAMPP or in Docker'],

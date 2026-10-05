@@ -123,7 +123,8 @@ include('admin_header.php');
                       <div class="form-group row">
                         <label class="col-sm-3 form-control-label">Enter Movie Poster Image</label>
                         <div class="col-sm-9">
-                          <input type="file" class="form-control" name="movie_img" placeholder="Movie Poster" required>
+                          <input type="file" class="form-control" name="movie_img" accept=".jpg,.jpeg,.png,.webp" required>
+                          <small class="form-text text-muted">JPG, PNG or WEBP, max 2 MB.</small>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -179,23 +180,24 @@ include('admin_header.php');
                   $mov_trl_url=isset($_POST['movie_trl_url']) ? $_POST['movie_trl_url'] : '';
                   $mov_dur=isset($_POST['movie_duration']) ? $_POST['movie_duration'] : '';
                   $mov_desc=isset($_POST['movie_description']) ? trim($_POST['movie_description']) : '';
-                  // for img upload and save
-                  $mov_image=isset($_FILES['movie_img']) ? basename($_FILES['movie_img']['name']) : '';
-                  $mov_image_tmp=isset($_FILES['movie_img']) ? $_FILES['movie_img']['tmp_name'] : '';
-                  // only image files go into upload-images
-                  $allowed_ext=['jpg','jpeg','png','gif','webp'];
+                  // poster: the same shared upload as snacks and coming soon
+                  // (JPG/PNG/WEBP, real image check, max 2 MB, random file name so posters never overwrite each other)
+                  require_once __DIR__ . '/admin_upload.php';
+                  $upload_error='';
                   if($mov_name=='' || $mov_cinema=='' || $mov_genre=='' || $mov_industry=='' || $mov_lang=='' || $mov_date=='' || $mov_dur=='')
                   {
                       echo swal_script('error', 'Please fill in the movie name and pick every dropdown.');
                   }
-                  else if($mov_image=='' || !in_array(strtolower(pathinfo($mov_image, PATHINFO_EXTENSION)), $allowed_ext))
+                  else if(empty($_FILES['movie_img']) || $_FILES['movie_img']['error']===UPLOAD_ERR_NO_FILE)
                   {
-                      echo swal_script('error', 'Please upload a JPG, PNG, GIF or WEBP poster.');
+                      echo swal_script('error', 'Please choose a poster image.');
+                  }
+                  else if(($mov_image=admin_upload_image('movie_img', $upload_error))===false)
+                  {
+                      echo swal_script('error', $upload_error);
                   }
                   else
                   {
-                      move_uploaded_file($mov_image_tmp,"upload-images/".$mov_image);
-
                       $insert=db_query("insert into addmovie (movie_name,movie_cin_id,movie_genre_id,movie_indus_id,movie_lang_id,movie_date_id,movie_img,movie_trl_url,movie_duration,description) values (?,?,?,?,?,?,?,?,?,?)",
                           'siiiiissss',
                           [$mov_name,$mov_cinema,$mov_genre,$mov_industry,$mov_lang,$mov_date,$mov_image,$mov_trl_url,$mov_dur,$mov_desc]);

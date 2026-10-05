@@ -32,6 +32,11 @@ function admin_upload_image($field, &$error, $dir = ADMIN_UPLOAD_DIR)
     }
     // random name: no clashes with other files and the user can't choose the file name
     $name = bin2hex(random_bytes(8)) . '.' . $ext;
+    // git does not keep empty folders, so create the upload folder if a fresh clone is missing it
+    if (!is_dir($dir) && !@mkdir($dir, 0775, true)) {
+        $error = 'The upload folder is missing and could not be created.';
+        return false;
+    }
     if (!move_uploaded_file($file['tmp_name'], $dir . $name)) {
         $error = 'The image could not be saved.';
         return false;

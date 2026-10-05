@@ -53,8 +53,8 @@ foreach($edit_movie_select as $edit_movie)
                           <?php if($edit_movie['movie_img']!=''){ ?>
                             <img src="upload-images/<?php echo e($edit_movie['movie_img']); ?>" width="70" height="70" style="margin-bottom:8px;">
                           <?php } ?>
-                          <input type="file" class="form-control" name="edit_movie_img">
-                          <small class="form-text text-muted">Leave empty to keep the current poster.</small>
+                          <input type="file" class="form-control" name="edit_movie_img" accept=".jpg,.jpeg,.png,.webp">
+                          <small class="form-text text-muted">JPG, PNG or WEBP, max 2 MB. Leave empty to keep the current poster.</small>
                         </div>
                       </div>
                       <div class="form-group row">
@@ -97,22 +97,18 @@ foreach($edit_movie_select as $edit_movie)
                   $edit_mov_desc=isset($_POST['edit_movie_description']) ? trim($_POST['edit_movie_description']) : '';
                   // for img upload and save: no new file means keep the old poster
                   $edit_mov_image=$edit_movie['movie_img'];
-                  $new_image=isset($_FILES['edit_movie_img']) ? basename($_FILES['edit_movie_img']['name']) : '';
-                  // only image files go into upload-images
-                  $allowed_ext=['jpg','jpeg','png','gif','webp'];
-                  $image_ok=true;
-                  if($new_image!='')
+                  // same shared upload as Add Movie: real image check, max 2 MB, random name; null = no new file
+                  require_once __DIR__ . '/admin_upload.php';
+                  $upload_error='';
+                  $new_image=admin_upload_image('edit_movie_img', $upload_error);
+                  $image_ok=$new_image!==false;
+                  if(!$image_ok)
                   {
-                      if(in_array(strtolower(pathinfo($new_image, PATHINFO_EXTENSION)), $allowed_ext))
-                      {
-                          move_uploaded_file($_FILES['edit_movie_img']['tmp_name'],"upload-images/".$new_image);
-                          $edit_mov_image=$new_image;
-                      }
-                      else
-                      {
-                          $image_ok=false;
-                          echo swal_script('error', 'Please upload a JPG, PNG, GIF or WEBP poster.');
-                      }
+                      echo swal_script('error', $upload_error);
+                  }
+                  else if($new_image)
+                  {
+                      $edit_mov_image=$new_image;
                   }
 
                   $movie_edited=false;
@@ -126,6 +122,10 @@ foreach($edit_movie_select as $edit_movie)
                   if($movie_edited!==false){
 
                     log_activity('Edited movie', 'movie_id=' . $addmovie_edit_id . ', ' . $edit_mov_name);
+                    // a replaced poster is deleted only if this app created it (random name), never a shared TMDB poster
+                    if($new_image){
+                        admin_delete_upload($edit_movie['movie_img']);
+                    }
 
                     echo "
                      <script>
