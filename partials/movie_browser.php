@@ -32,7 +32,7 @@ if ($browser_filters['q'] !== '') {
 }
 
 $browser_movies = db_all(
-    "SELECT m.movie_id, m.movie_name, m.movie_img, m.description, g.genre_name, i.industry_name, l.language_name,
+    "SELECT m.movie_id, m.movie_name, m.movie_img, m.description, m.rating, m.release_date, g.genre_name, i.industry_name, l.language_name,
             (SELECT MIN(TIMESTAMP(s.show_date, s.show_time)) FROM shows s
               WHERE s.movie_id = m.movie_id AND s.status = 'Active' AND TIMESTAMP(s.show_date, s.show_time) > NOW()) AS next_show
      FROM addmovie m
@@ -40,7 +40,7 @@ $browser_movies = db_all(
      LEFT JOIN industry i ON i.indus_id = m.movie_indus_id
      LEFT JOIN language l ON l.lang_id = m.movie_lang_id
      WHERE " . implode(' AND ', $browser_where) . "
-     ORDER BY next_show IS NULL, next_show, m.movie_id DESC",
+     ORDER BY next_show IS NULL, m.popularity DESC, next_show, m.movie_id DESC",
     $browser_types,
     $browser_params
 );
@@ -116,9 +116,11 @@ echo booking_css();
           <a class="mb-poster" href="moviedetail.php?movdet=<?php echo (int) $browser_movie['movie_id']; ?>">
             <img src="Admin/upload-images/<?php echo e($browser_movie['movie_img']); ?>" alt="<?php echo e($browser_movie['movie_name']); ?>" loading="lazy">
             <span class="mb-flag cx-badge <?php echo $browser_movie['next_show'] ? 'cx-badge-green' : 'cx-badge-grey'; ?>"><?php echo $browser_movie['next_show'] ? 'Now Showing' : 'No shows'; ?></span>
+            <?php if ((float) $browser_movie['rating'] > 0): ?><span class="cx-badge" style="position:absolute;right:10px;top:10px;background:rgba(0,0,0,.7);color:#f5c542;"><i class="fa fa-star"></i> <?php echo e(number_format((float) $browser_movie['rating'], 1)); ?></span><?php endif; ?>
           </a>
           <div class="mb-body">
             <h3><a href="moviedetail.php?movdet=<?php echo (int) $browser_movie['movie_id']; ?>"><?php echo e(trim($browser_movie['movie_name'])); ?></a></h3>
+            <?php if ($browser_movie['release_date']): ?><div class="mb-next"><?php echo e(date('d M Y', strtotime($browser_movie['release_date']))); ?></div><?php endif; ?>
             <div>
               <?php foreach (['genre_name', 'industry_name', 'language_name'] as $browser_field): if ($browser_movie[$browser_field]): ?>
                 <span class="cx-badge" style="font-size:11px;"><?php echo e(trim($browser_movie[$browser_field])); ?></span>
@@ -134,6 +136,10 @@ echo booking_css();
       </div>
     <?php endforeach; ?>
   </div>
+  <p class="cx-muted" style="font-size:11px;margin-top:18px;display:flex;align-items:center;gap:8px;">
+    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" style="height:12px;" loading="lazy">
+    This product uses the TMDB API but is not endorsed or certified by TMDB.
+  </p>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {

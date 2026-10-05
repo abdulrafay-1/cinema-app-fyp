@@ -27,10 +27,25 @@ Seed shows are created relative to the day you run the migration (next 7 days). 
 | 001_shared_schema.sql | Rafay | new columns on booking_details / user_reg_login / addmovie, all new tables, seed data |
 | 002_rafay_refund_reason.sql | Rafay | `booking_details.refund_reason`, `refund_processed_at` (admin refund decisions) |
 | 003_rafay_admin_email.sql | Rafay | seed admin login renamed to `admin@gmail.com` (password unchanged: `12345`). Safe to re-run; re-run it if you applied it before 7 Oct |
+| 005_rafay_tmdb.sql | Rafay | TMDB columns on `addmovie` (`tmdb_id`, `backdrop`, `release_date`, `rating`, `runtime`, `popularity`) and `coming_soon.tmdb_id` |
 | 004_umair_sample_data.sql | Umair | demo data only: 3 reviews by the Demo user (one Hidden) and 2 contact messages (one unread). No schema change |
 | 005_umair_demo_data.sql | Umair | demo data only: 3 customers (password `123456`), 5 finished + 2 upcoming bookings, 1 cancelled with a **pending** refund, 1 refunded, reviews, favorites, messages. Bookings are built like `finalize_booking()` (seats, snacks, promo count, loyalty). Uses a temporary procedure (dropped at the end). Run once per DB; safe to re-run |
 
 Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
+
+## TMDB catalog (real movie data)
+
+The movie catalog comes from TMDB. Each developer seeds their own database:
+
+1. Get a free key at https://www.themoviedb.org/settings/api (either the "API Key" or the "API Read Access Token" works).
+2. `cp includes/secrets.example.php includes/secrets.php` and paste the key between the quotes. `secrets.php` is git-ignored, so never commit the key or paste it anywhere else.
+3. Apply migration 005, back up, then run the seeder:
+   ```
+   docker compose exec -T db mysql -uroot dbmo < database/migrations/005_rafay_tmdb.sql
+   docker compose exec -T db mysqldump -uroot dbmo > backup.sql
+   docker compose exec web php database/seed_tmdb.php --yes
+   ```
+   It replaces all movies, shows, prices, coming soon, bookings, refunds, reviews and favorites. Users, admins, cinemas, snacks and promo codes stay. Re-run it any time to refresh "now playing". Downloaded posters (`Admin/upload-images/tmdb_*`) are git-ignored.
 
 ## Helpers you can use
 
@@ -113,6 +128,9 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
    **Done (Umair Task 2).**
 
 12. **Heads-up, Rafay edited `Admin/admin_header.php`** (on request): the sidebar avatar photo is replaced by a generic icon (your logged-in-email name line was kept), and `Admin/img/admin.jpg` was deleted. Pull before editing that file.
+
+14. **moviedetail.php trailer:** movies without a TMDB trailer have an empty `movie_trl_url`, and the iframe then loads `?autoplay=1`, which is the site itself. Wrap the trailer iframe in `<?php if ($movie_details['movie_trl_url']): ?> ... <?php endif; ?>`.
+15. **Sample reviews (migration 004)** pointed at the old movies, so the TMDB seeder deletes them. Re-add sample reviews for TMDB titles if you want the Reviews page populated (match by `movie_name` after seeding).
 
 ### For Rafay
 No changes needed, just FYI from Umair Task 1:
