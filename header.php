@@ -4,6 +4,9 @@ if (session_status() === PHP_SESSION_NONE) {
 	session_start();
 }
 include('config.php');
+require_once __DIR__ . '/customer_functions.php';
+// the logged-in customer for the navbar (null for guests); a blocked user is signed out here
+$nav_user = customer();
 
 
 ?>
@@ -29,6 +32,8 @@ include('config.php');
 	<link rel="stylesheet" href="css/photoswipe.css">
 	<link rel="stylesheet" href="css/default-skin.css">
 	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="assets/booking.css?v=2">
+	<link rel="stylesheet" href="css/customer.css?v=2">
 	<!-- Font Awesome 5, plus the v4 shim so old FA4 names (fa-pencil, fa-ticket, fa-clock-o) still show an icon -->
 	<link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
@@ -179,18 +184,7 @@ include('config.php');
 
 
 
-<!-- php start heres for session function -->
-
-
-                            <?php 
-							
-                             
-                            if(isset($_SESSION["ux"])){
-								
-
-                              echo 
-							  '
-							  <!-- header -->
+<!-- header: one navbar for guests and logged-in users -->
 	<header class="header">
 		<div class="header__wrap" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
 			<div class="container">
@@ -204,15 +198,11 @@ include('config.php');
 							</a>
 							<!-- end header logo -->
 
-							  <!-- header nav -->
+							<!-- header nav -->
 							<ul class="header__nav">
-								<!-- dropdown -->
 								<li class="header__nav-item">
 									<a href="index.php" class="header__nav-link">Home</a>
 								</li>
-
-								</li>
-								<!-- end dropdown -->
 
 								<!-- dropdown -->
 								<li class="header__nav-item">
@@ -233,116 +223,54 @@ include('config.php');
 								<li class="header__nav-item">
 									<a href="about.php" class="header__nav-link">About Us</a>
 								</li>
-								
+
 								<li class="header__nav-item">
 									<a href="faq.php" class="header__nav-link">Help</a>
 								</li>
+
 								<li class="header__nav-item">
-									<a href="userbooking.php" class="header__nav-link">My Account</a>
+									<a href="contact.php" class="header__nav-link">Contact</a>
 								</li>
-							
+
+								<?php if ($nav_user) { ?>
+								<!-- account dropdown: photo or initials + first name -->
+								<li class="header__nav-item">
+									<a class="dropdown-toggle header__nav-link cu-nav-user" href="#" role="button" id="dropdownMenuAccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<?php echo avatar_html($nav_user, 30); ?>
+										<span><?php echo e(strtok(trim($nav_user['name']), ' ')); ?></span>
+									</a>
+
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuAccount">
+									<li><a href="profile.php">Profile</a></li>
+									<li><a href="userbooking.php">My Bookings</a></li>
+									<li><a href="favorites.php">Favorites</a></li>
+									</ul>
+								</li>
+								<?php } else { ?>
+								<li class="header__nav-item">
+									<a href="signup.php" class="header__nav-link">Sign Up</a>
+								</li>
+								<?php } ?>
 							</ul>
 							<!-- end header nav -->
 
 							<!-- header auth -->
 							<div class="header__auth">
-
+								<?php if ($nav_user) { ?>
 								<a href="logout.php" class="header__sign-in">
 									<i class="icon ion-ios-log-in"></i>
 									<span>Log Out</span>
 								</a>
-							</div>
-							<!-- end header auth -->
-
-							<!-- header menu btn -->
-							<button class="header__btn" type="button">
-								<span></span>
-								<span></span>
-								<span></span>
-							</button>
-							<!-- end header menu btn -->
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</header>
-
-
-
-							  ';
-
-
-							} 
-							else{
-
-                              echo 
-							  '
-							 <!-- header -->
-	<header class="header">
-		<div class="header__wrap" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="header__content">
-							<!-- header logo -->
-							<img src="icon/main__logo.png" width=70 height=70  style="display:inline">
-							<a href="index.php" style="background-color:#2b2b31;">
-							<h6 id="main__logo">Online Movie <br> Booking System</h6>
-							</a>
-							<!-- end header logo -->
-							  <!-- header nav -->
-							<ul class="header__nav">
-								<!-- dropdown -->
-								<li class="header__nav-item">
-									<a href="index.php" class="header__nav-link">Home</a>
-								</li>
-
-								</li>
-								<!-- end dropdown -->
-
-								<!-- dropdown -->
-								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Movies Categories</a>
-
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
-									<li><a href="hollywood.php">HollyWood</a></li>
-									<li><a href="bollywood.php">BollyWood</a></li>
-									<li><a href="lollywood.php">LollyWood</a></li>
-
-									</ul>
-								</li>
-								<!-- end dropdown -->
-
-								<li class="header__nav-item">
-									<a href="pricing.php" class="header__nav-link">Ticket Pricing</a>
-								</li>
-
-								<li class="header__nav-item">
-									<a href="about.php" class="header__nav-link">About Us</a>
-								</li>
-								
-								<li class="header__nav-item">
-									<a href="faq.php" class="header__nav-link">Help</a>
-								</li>
-								<li class="header__nav-item">
-									<a href="signup.php" class="header__nav-link">Sign Up</a>
-								</li>
-							
-							</ul>
-							<!-- end header nav -->
-
-							<!-- header auth -->
-							<div class="header__auth">
-
+								<?php } else { ?>
 								<a href="signin.php" class="header__sign-in">
 									<i class="icon ion-ios-log-in"></i>
 									<span>Login in</span>
 								</a>
+								<?php } ?>
 							</div>
 							<!-- end header auth -->
 
-							<!-- header menu btn -->
+							<!-- header menu btn (mobile) -->
 							<button class="header__btn" type="button">
 								<span></span>
 								<span></span>
@@ -356,16 +284,6 @@ include('config.php');
 		</div>
 	</header>
 	<!-- end header -->
-
-
-							  ';
-
-
-							}
-							?>
-
-
-<!-- php ends here for session function -->
 
 
 

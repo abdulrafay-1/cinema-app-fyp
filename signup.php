@@ -20,6 +20,9 @@ if(isset($_POST['btn_signup'])){
     else if(!filter_var($ux_email, FILTER_VALIDATE_EMAIL)){
         $signup_error='Please enter a valid email address.';
     }
+    else if(strlen($ux_pass)<6){
+        $signup_error='Password must be at least 6 characters.';
+    }
     else if($ux_pass!==$ux_recheck){
         $signup_error='Password Did Not Match!';
     }
@@ -72,7 +75,7 @@ include('header.php');
 							</div>
 
 							<div class="sign__group">
-								<input type="password" class="sign__input" placeholder="Password"  name="password" required >
+								<input type="password" class="sign__input" placeholder="Password (min 6 characters)"  name="password" minlength="6" required >
 							</div>
 
                             <div class="sign__group">

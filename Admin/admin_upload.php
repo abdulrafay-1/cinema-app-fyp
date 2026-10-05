@@ -1,12 +1,12 @@
 <?php
-// Image upload for Umair's admin pages (snacks, coming soon).
-// Files go to Admin/upload-images/ because the customer pages read them from there.
+// Image upload shared by Umair's pages: admin snacks / coming soon (Admin/upload-images/,
+// which the customer pages read) and customer profile photos (uploads/profile/).
 
 const ADMIN_UPLOAD_DIR = __DIR__ . '/upload-images/';
 const ADMIN_UPLOAD_MAX = 2 * 1024 * 1024;
 
 // Returns null when no file was chosen, false on error (message in $error), or the new file name.
-function admin_upload_image($field, &$error)
+function admin_upload_image($field, &$error, $dir = ADMIN_UPLOAD_DIR)
 {
     $error = '';
     if (empty($_FILES[$field]) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) {
@@ -32,7 +32,7 @@ function admin_upload_image($field, &$error)
     }
     // random name: no clashes with other files and the user can't choose the file name
     $name = bin2hex(random_bytes(8)) . '.' . $ext;
-    if (!move_uploaded_file($file['tmp_name'], ADMIN_UPLOAD_DIR . $name)) {
+    if (!move_uploaded_file($file['tmp_name'], $dir . $name)) {
         $error = 'The image could not be saved.';
         return false;
     }
@@ -40,9 +40,9 @@ function admin_upload_image($field, &$error)
 }
 
 // Deletes an image only if this helper created it (random hex name), so shared posters are never removed.
-function admin_delete_upload($name)
+function admin_delete_upload($name, $dir = ADMIN_UPLOAD_DIR)
 {
-    if ($name && preg_match('/^[0-9a-f]{16}\.(jpg|png|webp)$/', $name) && is_file(ADMIN_UPLOAD_DIR . $name)) {
-        @unlink(ADMIN_UPLOAD_DIR . $name);
+    if ($name && preg_match('/^[0-9a-f]{16}\.(jpg|png|webp)$/', $name) && is_file($dir . $name)) {
+        @unlink($dir . $name);
     }
 }
