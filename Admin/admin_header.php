@@ -56,7 +56,7 @@ require_once __DIR__ . '/../includes/admin_functions.php';
       <nav id="sidebar">
         <!-- Sidebar Header-->
         <div class="sidebar-header d-flex align-items-center">
-          <div class="avatar"><img src="img/admin.jpg" alt="..." class="img-fluid rounded-circle"></div>
+          <div class="avatar d-flex align-items-center justify-content-center"><i class="fa fa-user-circle" style="font-size:3rem;color:#8a8d93;"></i></div>
           <div class="title">
             <h1 class="h5" style="word-break: break-all;"><?php echo e(isset($_SESSION['admin']) ? $_SESSION['admin'] : 'Admin'); ?></h1>
           </div>

@@ -26,6 +26,7 @@ Seed shows are created relative to the day you run the migration (next 7 days). 
 |---|---|---|
 | 001_shared_schema.sql | Rafay | new columns on booking_details / user_reg_login / addmovie, all new tables, seed data |
 | 002_rafay_refund_reason.sql | Rafay | `booking_details.refund_reason`, `refund_processed_at` (admin refund decisions) |
+| 003_rafay_admin_email.sql | Rafay | seed admin login renamed to `admin@moviebooking.com` (password unchanged: `12345`) |
 
 Later migrations: `database/migrations/00X_<name>_<what>.sql`, add a row above.
 
@@ -102,6 +103,8 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 10. **Font Awesome:** header.php loads both FA 4.7 and FA 5.15. The FA5 sheet wins, so FA4-only names (`fa-pencil`, `fa-ticket`, `fa-video-camera`, `fa-clock-o`) render blank on public pages. Use FA5 names (`fa-pencil-alt`, `fa-ticket-alt`, `fa-video`, `fa-clock`).
 
 11. **Admin/admin_footer.php:** it loads `js/charts-home.js` on every admin page. That file draws the template's fake demo charts on canvas ids that no page has any more, so each admin page logs ~10 "Failed to create chart" console errors. Please remove that `<script>` line. `dashboard.php` draws its own charts with the same Chart.js.
+
+12. **Heads-up, Rafay edited `Admin/admin_header.php`** (on request): the sidebar avatar photo is replaced by a generic icon (your logged-in-email name line was kept), and `Admin/img/admin.jpg` was deleted. Pull before editing that file.
 
 ### For Rafay
 No changes needed, just FYI from Umair Task 1:

@@ -9,13 +9,14 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
    ```
    docker compose exec -T db mysql -uroot dbmo < database/migrations/001_shared_schema.sql
    docker compose exec -T db mysql -uroot dbmo < database/migrations/002_rafay_refund_reason.sql
+   docker compose exec -T db mysql -uroot dbmo < database/migrations/003_rafay_admin_email.sql
    ```
 3. Seed shows are dated from the day 001 was applied. If that was more than a few days ago, add fresh shows in **Admin → Shows** (step 10 below) for the movies you'll demo. At least one show should be **less than 24 hours away**, to show the 50% refund.
 4. Accounts:
    - Customer: `Demo@outlook.com` / `123`
    - Second customer for the seat-hold demo: register one on Sign Up (needs Umair's signup fix), or run:
      `docker compose exec db mysql -uroot dbmo -e "insert into user_reg_login (name,email,password) values ('Tester','tester@test.com','123')"`
-   - Admin: `bilalhussain@gmail.com` / `12345` at `/Admin/login.php`
+   - Admin: `admin@moviebooking.com` / `12345` at `/Admin/login.php`
 5. Open two browser windows: a normal one (customer), and a private one (admin, and later the second customer).
 
 ## 1. Browse, filter, live search

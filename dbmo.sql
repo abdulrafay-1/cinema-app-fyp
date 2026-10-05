@@ -74,7 +74,7 @@ CREATE TABLE `admin_login` (
 --
 
 INSERT INTO `admin_login` (`id`, `email`, `password`) VALUES
-(2, 'bilalhussain@gmail.com', '12345');
+(2, 'admin@moviebooking.com', '12345');
 
 -- --------------------------------------------------------
 
