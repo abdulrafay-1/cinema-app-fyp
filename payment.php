@@ -78,14 +78,14 @@ echo booking_css();
 <style>
   .pay-tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
   .pay-tab { flex: 1 1 120px; padding: 12px; border-radius: 8px; border: 1px solid var(--cx-line); background: transparent; color: var(--cx-muted); font-weight: 600; cursor: pointer; }
-  .pay-tab.is-active { border-color: var(--cx-pink); color: #fff; background: rgba(255, 85, 165, .1); }
+  .pay-tab.is-active { border-color: var(--cx-pink); color: var(--cx-text); background: #fff0f7; }
   .pay-pane { display: none; }
   .pay-pane.is-active { display: block; }
   .pay-field { margin-bottom: 14px; }
   .pay-field label { display: block; font-size: 13px; color: var(--cx-muted); margin-bottom: 4px; }
-  .pay-overlay { position: fixed; inset: 0; background: rgba(15, 15, 18, .92); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; color: #fff; gap: 18px; }
+  .pay-overlay { position: fixed; inset: 0; background: rgba(245, 246, 250, .95); z-index: 2000; display: none; align-items: center; justify-content: center; flex-direction: column; color: var(--cx-text); gap: 18px; }
   .pay-overlay.is-active { display: flex; }
-  .pay-spinner { width: 64px; height: 64px; border-radius: 50%; border: 5px solid rgba(255, 255, 255, .15); border-top-color: #ff55a5; animation: pay-spin .9s linear infinite; }
+  .pay-spinner { width: 64px; height: 64px; border-radius: 50%; border: 5px solid rgba(31, 34, 48, .1); border-top-color: #ff55a5; animation: pay-spin .9s linear infinite; }
   @keyframes pay-spin { to { transform: rotate(360deg); } }
 </style>
 
@@ -164,7 +164,7 @@ echo booking_css();
             <tr><td><?php echo e($snack['name']); ?> &times; <?php echo (int) $snack['qty']; ?></td><td class="text-end"><?php echo money($snack['line']); ?></td></tr>
           <?php endforeach; ?>
           <?php if ($t['discount']): ?>
-            <tr><td>Discount (<?php echo e($t['promo_code']); ?>, <?php echo (int) $t['promo_percent']; ?>%)</td><td class="text-end" style="color:#6ee7a0;">- <?php echo money($t['discount']); ?></td></tr>
+            <tr><td>Discount (<?php echo e($t['promo_code']); ?>, <?php echo (int) $t['promo_percent']; ?>%)</td><td class="text-end" style="color:#1b7a46;">- <?php echo money($t['discount']); ?></td></tr>
           <?php endif; ?>
           <tr><td style="font-size:18px;font-weight:700;">Total</td><td class="text-end" style="font-size:22px;font-weight:700;"><?php echo money($t['total']); ?></td></tr>
         </table>
@@ -176,7 +176,7 @@ echo booking_css();
 
 <div class="pay-overlay" id="pay-overlay" aria-live="assertive">
   <div class="pay-spinner"></div>
-  <h3 style="color:#fff;margin:0;">Processing payment...</h3>
+  <h3 style="color:var(--cx-text);margin:0;">Processing payment...</h3>
   <p class="cx-muted" style="margin:0;">Please don't close or refresh this page.</p>
 </div>
 
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(function (r) { return r.json(); })
       .then(function (data) {
         otpMsg.textContent = data.message;
-        otpMsg.style.color = data.ok ? '#6ee7a0' : '#ff9da2';
+        otpMsg.style.color = data.ok ? '#1b7a46' : '#b4232c';
       })
       .catch(function () { otpMsg.textContent = 'Could not send OTP. Please try again.'; });
   });

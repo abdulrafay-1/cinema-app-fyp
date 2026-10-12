@@ -32,8 +32,9 @@ $nav_user = customer();
 	<link rel="stylesheet" href="css/photoswipe.css">
 	<link rel="stylesheet" href="css/default-skin.css">
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="assets/booking.css?v=2">
-	<link rel="stylesheet" href="css/customer.css?v=4">
+	<link rel="stylesheet" href="assets/booking.css?v=3">
+	<link rel="stylesheet" href="css/customer.css?v=5">
+	<link rel="stylesheet" href="assets/light.css?v=<?php echo (int) @filemtime(__DIR__ . '/assets/light.css'); ?>">
 	<!-- Font Awesome 5, plus the v4 shim so old FA4 names (fa-pencil, fa-ticket, fa-clock-o) still show an icon -->
 	<link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
@@ -64,7 +65,7 @@ $nav_user = customer();
      
      /* main logo css */
      #main__logo{
-     	color:rgba(255,255,255,0.75);
+     	color:#1f2230;
      	font-family: 'Ubuntu', sans-serif;
      	text-transform:Uppercase;
      	padding-top:15px;
@@ -84,16 +85,17 @@ $nav_user = customer();
      }
      
      .typing-demo {
-       width: 510px;
+       width: 16em;
+       max-width: 100%;
        animation: typing 3s steps(30), blink .5s step-end infinite alternate;
        white-space: nowrap;
        overflow: hidden;
        border-right: 3px solid;
        font-family: 'Ubuntu'	;
-       font-size: 2em;
-       color:white;
+       font-size: clamp(1.05rem, 5.2vw, 2em);
+       color:#1f2230;
        text-transform:Uppercase;
-       text-shadow: 3px 3px 10px white;
+       text-shadow: none;
      }
      
      @keyframes typing {
@@ -111,7 +113,7 @@ $nav_user = customer();
 
 	 /* contnt tab css */
 	 .nav-tabs .nav-link.active{
-		color:white !important;
+		color:#ff55a5 !important;
 	 }
      .nav-tabs .nav-link {
        margin-bottom: -1px;
@@ -119,7 +121,7 @@ $nav_user = customer();
        border: none !important;
 	    }
 		.nav-tabs .nav-link:focus{
-			color:white !important;
+			color:#ff55a5 !important;
 		}
 		.nav-tabs{
 			border-bottom:none !important;
@@ -133,13 +135,13 @@ $nav_user = customer();
   box-shadow: none;
    }
 	 option{
-		background:#28282d;
-		color:white;
+		background:#fff;
+		color:#1f2230;
 	 }
       
 	 .mCustomScrollbar
 	 {
-		background-color: #2b2b31 !important;
+		background-color: #fff !important;
 	 }
 	 .accordion-button {
     position: relative;
@@ -188,14 +190,14 @@ $nav_user = customer();
 
 <!-- header: one navbar for guests and logged-in users -->
 	<header class="header">
-		<div class="header__wrap" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+		<div class="header__wrap" style="box-shadow: rgba(31, 34, 48, 0.06) 0px 4px 16px;">
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
 						<div class="header__content">
 							<!-- header logo -->
-							<img src="icon/main__logo.png" width=70 height=70  style="display:inline">
-							<a href="index.php" style="background-color:#2b2b31;">
+							<a href="index.php" class="cx-brand">
+							<img src="icon/main__logo.png" width=70 height=70 class="cx-logo-mark" alt="">
 							<h6 id="main__logo">CineMax <br> Karachi</h6>
 							</a>
 							<!-- end header logo -->

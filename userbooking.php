@@ -115,7 +115,7 @@ echo booking_css();
           </div>
           <?php if ($b['refund_status'] !== 'None'): ?>
             <div style="font-size:13px;margin-top:6px;" class="cx-muted">
-              Refund amount: <strong style="color:#fff;"><?php echo money($b['refund_amount']); ?></strong>
+              Refund amount: <strong style="color:var(--cx-text);"><?php echo money($b['refund_amount']); ?></strong>
               <?php if ($b['refund_status'] === 'Rejected' && $b['refund_reason']): ?><br>Reason: <?php echo e($b['refund_reason']); ?><?php endif; ?>
             </div>
           <?php endif; ?>

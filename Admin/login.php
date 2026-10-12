@@ -42,8 +42,8 @@ $backdrop = $backdrop_row ? 'upload-images/' . rawurlencode($backdrop_row['backd
     <link rel="shortcut icon" href="img/favi.png">
     <style>
       * { box-sizing: border-box; }
-      body { margin: 0; min-height: 100vh; font-family: 'Muli', sans-serif; background: radial-gradient(circle at 15% 20%, rgba(255, 85, 165, .14), transparent 40%), radial-gradient(circle at 85% 80%, rgba(255, 88, 96, .12), transparent 40%), #1e1f23; color: #e8e8ea; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
-      .al-card { width: 100%; max-width: 980px; display: grid; grid-template-columns: 1.05fr 1fr; border-radius: 22px; overflow: hidden; background: #2a2b30; border: 1px solid rgba(255, 255, 255, .06); box-shadow: 0 30px 80px rgba(0, 0, 0, .55); }
+      body { margin: 0; min-height: 100vh; font-family: 'Muli', sans-serif; background: radial-gradient(circle at 15% 20%, rgba(255, 85, 165, .14), transparent 40%), radial-gradient(circle at 85% 80%, rgba(255, 88, 96, .10), transparent 40%), #f5f6fa; color: #1f2230; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+      .al-card { width: 100%; max-width: 980px; display: grid; grid-template-columns: 1.05fr 1fr; border-radius: 22px; overflow: hidden; background: #ffffff; border: 1px solid #e7e9f0; box-shadow: 0 30px 70px rgba(31, 34, 48, .12); }
       .al-brand { position: relative; padding: 48px 44px; display: flex; flex-direction: column; justify-content: space-between; min-height: 560px; color: #fff; background: #ff5880; overflow: hidden; }
       .al-brand-bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
       .al-brand::after { content: ''; position: absolute; inset: 0; background: linear-gradient(150deg, rgba(255, 85, 165, .93) 0%, rgba(255, 88, 96, .88) 55%, rgba(120, 30, 70, .9) 100%); }
@@ -57,25 +57,25 @@ $backdrop = $backdrop_row ? 'upload-images/' . rawurlencode($backdrop_row['backd
       .al-features i { width: 32px; height: 32px; border-radius: 9px; background: rgba(255, 255, 255, .16); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; flex: 0 0 auto; }
       .al-brand small { color: rgba(255, 255, 255, .75); font-size: 12px; }
       .al-form { padding: 56px 48px; display: flex; flex-direction: column; justify-content: center; }
-      .al-form h2 { font-size: 28px; font-weight: 800; color: #fff; margin: 0 0 6px; }
-      .al-form .al-sub { color: #8a8d93; margin: 0 0 32px; font-size: 14px; }
+      .al-form h2 { font-size: 28px; font-weight: 800; color: #1f2230; margin: 0 0 6px; }
+      .al-form .al-sub { color: #6b7084; margin: 0 0 32px; font-size: 14px; }
       .al-field { margin-bottom: 20px; }
-      .al-field label { display: block; font-size: 13px; font-weight: 700; color: #c9cacd; margin-bottom: 8px; }
+      .al-field label { display: block; font-size: 13px; font-weight: 700; color: #3d4256; margin-bottom: 8px; }
       .al-input { position: relative; }
-      .al-input > i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6f7279; font-size: 15px; pointer-events: none; transition: color .15s; }
-      .al-input input { width: 100%; height: 50px; border-radius: 12px; border: 1.5px solid #3a3b42; background: #1f2024; color: #fff; padding: 0 46px; font-size: 15px; font-family: inherit; outline: none; transition: border-color .15s, box-shadow .15s; }
-      .al-input input::placeholder { color: #5d6068; }
+      .al-input > i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9a9eae; font-size: 15px; pointer-events: none; transition: color .15s; }
+      .al-input input { width: 100%; height: 50px; border-radius: 12px; border: 1.5px solid #d9dce5; background: #ffffff; color: #1f2230; padding: 0 46px; font-size: 15px; font-family: inherit; outline: none; transition: border-color .15s, box-shadow .15s; }
+      .al-input input::placeholder { color: #9a9eae; }
       .al-input input:focus { border-color: #ff55a5; box-shadow: 0 0 0 4px rgba(255, 85, 165, .15); }
       .al-input:focus-within > i { color: #ff55a5; }
-      .al-input input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #1f2024 inset; -webkit-text-fill-color: #fff; caret-color: #fff; }
-      .al-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #6f7279; cursor: pointer; }
-      .al-eye:hover, .al-eye:focus-visible { color: #fff; background: rgba(255, 255, 255, .06); outline: none; }
-      .al-error { display: flex; align-items: center; gap: 10px; background: rgba(255, 88, 96, .12); border: 1px solid rgba(255, 88, 96, .45); color: #ffb3b6; border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-bottom: 22px; }
+      .al-input input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #ffffff inset; -webkit-text-fill-color: #1f2230; caret-color: #1f2230; }
+      .al-eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #9a9eae; cursor: pointer; }
+      .al-eye:hover, .al-eye:focus-visible { color: #1f2230; background: #f1f2f6; outline: none; }
+      .al-error { display: flex; align-items: center; gap: 10px; background: #fff1f2; border: 1px solid rgba(255, 88, 96, .45); color: #b4232c; border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-bottom: 22px; }
       .al-btn { width: 100%; height: 52px; border: 0; border-radius: 12px; background: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%); color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .5px; cursor: pointer; box-shadow: 0 10px 24px rgba(255, 85, 165, .3); transition: transform .1s, box-shadow .15s; margin-top: 6px; }
       .al-btn:hover { box-shadow: 0 12px 28px rgba(255, 85, 165, .45); }
       .al-btn:active { transform: translateY(1px); }
       .al-btn:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-      .al-back { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; color: #8a8d93; font-size: 14px; text-decoration: none; align-self: center; }
+      .al-back { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; color: #6b7084; font-size: 14px; text-decoration: none; align-self: center; }
       .al-back:hover { color: #ff55a5; text-decoration: none; }
       @media (max-width: 860px) {
         .al-card { grid-template-columns: 1fr; max-width: 480px; }

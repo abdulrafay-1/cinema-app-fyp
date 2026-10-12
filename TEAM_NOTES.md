@@ -134,6 +134,11 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
 
 14. **Done by Rafay (on request), `moviedetail.php`:** the SYNOPSIS / SHOWS / OTHER DETAILS accordion is replaced by an always-visible details card (poster, genre/language/industry/year/runtime chips, synopsis, TMDB rating, audience rating, runtime, release date, Book / Trailer / Reviews buttons). The trailer iframe only renders when `movie_trl_url` is set, otherwise the backdrop is shown. The old SHOWS panel was dropped because Upcoming Shows below covers it. Pull before editing that file.
 15. **Sample reviews (migration 004)** pointed at the old movies, so the TMDB seeder deletes them. Re-add sample reviews for TMDB titles if you want the Reviews page populated (match by `movie_name` after seeding).
+16. **Heads-up, Rafay switched the whole site and admin panel to a light (white) theme.** Pull before editing any of these of your files: `header.php`, `css/customer.css`, `moviedetail.php`, `partials/coming_soon.php`, `Admin/admin_header.php`, `Admin/login.php`, `Admin/booking.php`, `Admin/admin_alert.php`, `Admin/css/custom.css`. Only colours changed, no logic. How it works now:
+    - **Customer site:** the `--cx-*` variables at the top of `assets/booking.css` are now light (`--cx-text` dark, `--cx-card` white, plus new `--cx-text-soft` and `--cx-shadow`). New `assets/light.css` (linked last in `header.php`) overrides the FlixGo template's dark colours; `css/main.css` itself is untouched. In new code use `var(--cx-text)` / `var(--cx-muted)` instead of `#fff` / `rgba(255,255,255,…)`, or the text disappears on white.
+    - **Admin:** light overrides live in `Admin/css/custom.css` (loaded after `style.default.css`, which is untouched). Card titles, tables, forms, sidebar, navbar and modals are covered there; avoid inline dark colours (`#2d3035`, `#fff` text) in new admin pages.
+    - Both stylesheet links carry a `?v=<filemtime>` so browsers pick up CSS edits without a hard refresh.
+    - Left dark on purpose: photo/backdrop banners (home slider, seat-map film banner, trailer) and the camera box on Scan Ticket.
 
 ### For Rafay
 No changes needed, just FYI from Umair Task 1:

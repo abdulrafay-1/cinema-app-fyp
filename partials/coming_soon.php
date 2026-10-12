@@ -28,7 +28,7 @@ echo booking_css();
               <?php endif; ?>
             </div>
             <div style="padding:12px 14px;">
-              <h3 style="font-size:16px;margin:0 0 4px;color:#fff;text-transform:uppercase;"><?php echo e($soon['title']); ?></h3>
+              <h3 style="font-size:16px;margin:0 0 4px;color:var(--cx-text);text-transform:uppercase;"><?php echo e($soon['title']); ?></h3>
               <div class="cx-muted" style="font-size:12px;margin-bottom:6px;"><?php echo $soon['release_date'] ? 'Releasing ' . e(date('d M Y', strtotime($soon['release_date']))) : 'Release date TBA'; ?></div>
               <p class="cx-muted" style="font-size:13px;margin:0 0 8px;"><?php echo e($soon['description']); ?></p>
               <?php if ($soon['trailer_url'] && preg_match('#^https?://#i', $soon['trailer_url'])): ?>

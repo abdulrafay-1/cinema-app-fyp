@@ -112,7 +112,7 @@ include('header.php');
 <!-- movie title name -->
     <section>
               <div class="container" style="margin-top:120px;">
-                         <h2 class="mb-3 display-3" style="color:white;text-transform:uppercase;text-align:center;">
+                         <h2 class="mb-3 display-3" style="color:var(--cx-text);text-transform:uppercase;text-align:center;">
 
                                <?php echo "📽 &nbsp;".e($movie_details['movie_name']); ?>
                          </h2>
@@ -155,11 +155,11 @@ include('header.php');
           <div class="container">
 
                 <?php if (!empty($movie_details['movie_trl_url'])) { ?>
-                <div class="ratio ratio-16x9" style="box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);border-radius:16px;overflow:hidden;">
+                <div class="ratio ratio-16x9" style="box-shadow: 0 10px 30px rgba(31, 34, 48, .15);border-radius:16px;overflow:hidden;">
                       <iframe src="<?php echo  e($movie_details['movie_trl_url']); ?>?autoplay=1" title="<?php echo e($movie_details['movie_name']); ?> trailer" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 <?php } else if (!empty($movie_details['backdrop'])) { ?>
-                <img src="Admin/upload-images/<?php echo e($movie_details['backdrop']); ?>" alt="<?php echo e($movie_details['movie_name']); ?>" style="width:100%;border-radius:16px;box-shadow: 0 5px 25px 0 rgb(0 0 0 / 30%);">
+                <img src="Admin/upload-images/<?php echo e($movie_details['backdrop']); ?>" alt="<?php echo e($movie_details['movie_name']); ?>" style="width:100%;border-radius:16px;box-shadow: 0 10px 30px rgba(31, 34, 48, .15);">
                 <?php } ?>
 
           </div>
@@ -195,19 +195,19 @@ $md_chips = array_filter([
 ]);
 ?>
 <style>
-  .md-card { background: #28282d; border-radius: 16px; padding: 28px; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); border: 1px solid rgba(255, 255, 255, .06); }
-  .md-poster { width: 100%; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .5); display: block; }
+  .md-card { background: var(--cx-card); border-radius: 16px; padding: 28px; box-shadow: var(--cx-shadow); border: 1px solid var(--cx-line); }
+  .md-poster { width: 100%; border-radius: 12px; box-shadow: 0 12px 30px rgba(31, 34, 48, .18); display: block; }
   .md-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-  .md-chip { padding: 5px 14px; border-radius: 999px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .85); font-size: 13px; }
+  .md-chip { padding: 5px 14px; border-radius: 999px; background: var(--cx-bg); border: 1px solid var(--cx-line); color: var(--cx-text-soft); font-size: 13px; }
   .md-chip:first-child { background: linear-gradient(90deg, #ff55a5, #ff5860); border-color: transparent; color: #fff; font-weight: 600; }
   .md-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #ff55a5; font-weight: 700; margin-bottom: 8px; }
-  .md-synopsis { color: rgba(255, 255, 255, .78); font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
+  .md-synopsis { color: var(--cx-text-soft); font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
   .md-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .md-stat { background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .07); border-radius: 12px; padding: 14px 16px; }
-  .md-stat small { display: block; color: rgba(255, 255, 255, .5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .md-stat strong { color: #fff; font-size: 20px; font-weight: 700; }
+  .md-stat { background: var(--cx-bg); border: 1px solid var(--cx-line); border-radius: 12px; padding: 14px 16px; }
+  .md-stat small { display: block; color: var(--cx-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .md-stat strong { color: var(--cx-text); font-size: 20px; font-weight: 700; }
   .md-stat strong .fa-star { color: #f5c542; font-size: 16px; }
-  .md-stat span { color: rgba(255, 255, 255, .5); font-size: 13px; }
+  .md-stat span { color: var(--cx-muted); font-size: 13px; }
   .md-actions { display: flex; flex-wrap: wrap; gap: 10px; }
   @media (max-width: 991px) { .md-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 767px) { .md-card { padding: 18px; } .md-poster { max-width: 200px; margin: 0 auto; } }
@@ -278,7 +278,7 @@ $md_chips = array_filter([
 <div class="container" id="reviews" style="margin-top:30px;">
   <div class="cx-card">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
-      <h3 style="color:#fff;margin:0;font-family:'Ubuntu',sans-serif;">Reviews</h3>
+      <h3 style="color:var(--cx-text);margin:0;font-family:'Ubuntu',sans-serif;">Reviews</h3>
       <?php if($review_total){ ?>
         <span class="cx-muted"><?php echo stars_html($review_average); ?> &nbsp;<?php echo e(number_format($review_average,1)); ?> average from <?php echo $review_total; ?> review<?php echo $review_total===1 ? '' : 's'; ?></span>
       <?php } ?>
@@ -362,7 +362,7 @@ $md_chips = array_filter([
 <!-- more like this: same genre -->
 <?php if($similar){ ?>
 <div class="container" style="margin-top:10px;margin-bottom:40px;">
-  <h3 style="color:#fff;font-family:'Ubuntu',sans-serif;margin-bottom:16px;">More like this</h3>
+  <h3 style="color:var(--cx-text);font-family:'Ubuntu',sans-serif;margin-bottom:16px;">More like this</h3>
   <div class="row g-3">
     <?php foreach($similar as $sim){ ?>
       <div class="col-6 col-md-3">

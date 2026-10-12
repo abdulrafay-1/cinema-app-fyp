@@ -170,7 +170,7 @@ function booking_css()
     }
     $done = true;
     $base = (strpos($_SERVER['SCRIPT_NAME'], '/Admin/') !== false) ? '../' : '';
-    return '<link rel="stylesheet" href="' . $base . 'assets/booking.css?v=2">';
+    return '<link rel="stylesheet" href="' . $base . 'assets/booking.css?v=3">';
 }
 
 function active_snacks()

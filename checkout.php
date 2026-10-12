@@ -98,12 +98,12 @@ echo booking_css();
             <button type="button" class="cx-btn cx-btn-sm" id="promo-apply">Apply</button>
           </div>
           <input type="hidden" name="promo_code" id="promo-code" value="<?php echo e($state['promo']); ?>">
-          <div id="promo-msg" style="font-size:13px;min-height:20px;margin-bottom:10px;"><?php if ($t['promo_code']): ?><span style="color:#6ee7a0;"><?php echo e($t['promo_code']); ?> applied: <?php echo (int) $t['promo_percent']; ?>% off.</span><?php endif; ?></div>
+          <div id="promo-msg" style="font-size:13px;min-height:20px;margin-bottom:10px;"><?php if ($t['promo_code']): ?><span style="color:#1b7a46;"><?php echo e($t['promo_code']); ?> applied: <?php echo (int) $t['promo_percent']; ?>% off.</span><?php endif; ?></div>
 
           <table class="cx-table">
             <tr><td>Tickets (<?php echo count($t['seats']); ?>)</td><td class="text-end" id="sum-tickets" data-amount="<?php echo (int) $t['tickets_amount']; ?>"><?php echo money($t['tickets_amount']); ?></td></tr>
             <tr><td>Snacks</td><td class="text-end" id="sum-snacks"><?php echo money($t['snacks_amount']); ?></td></tr>
-            <tr><td>Discount <span id="sum-promo-label"><?php echo $t['promo_code'] ? '(' . e($t['promo_code']) . ')' : ''; ?></span></td><td class="text-end" id="sum-discount" style="color:#6ee7a0;">- <?php echo money($t['discount']); ?></td></tr>
+            <tr><td>Discount <span id="sum-promo-label"><?php echo $t['promo_code'] ? '(' . e($t['promo_code']) . ')' : ''; ?></span></td><td class="text-end" id="sum-discount" style="color:#1b7a46;">- <?php echo money($t['discount']); ?></td></tr>
             <tr><td style="font-size:18px;font-weight:700;">Total</td><td class="text-end" style="font-size:22px;font-weight:700;" id="sum-total"><?php echo money($t['total']); ?></td></tr>
           </table>
           <p class="cx-muted" style="font-size:12px;margin:10px 0;">You will earn <strong id="sum-points"><?php echo loyalty_points_for($t['total']); ?></strong> loyalty points.</p>
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function showPromo(text, ok) {
     promoMsg.innerHTML = '';
     var span = document.createElement('span');
-    span.style.color = ok ? '#6ee7a0' : '#ff9da2';
+    span.style.color = ok ? '#1b7a46' : '#b4232c';
     span.textContent = text;
     promoMsg.appendChild(span);
   }

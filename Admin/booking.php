@@ -169,10 +169,10 @@ include('admin_header.php');
 
   <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content" style="background:#2d3035;color:#ddd;">
+      <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="bookingModalTitle">Booking details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:#fff;"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body"><table class="table table-sm mb-0" id="bookingModalTable"></table></div>
       </div>

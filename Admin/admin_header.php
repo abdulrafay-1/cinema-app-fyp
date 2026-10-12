@@ -34,7 +34,7 @@ $admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
     <!-- theme stylesheet-->
     <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/custom.css?v=<?php echo (int) @filemtime(__DIR__ . '/css/custom.css'); ?>">
     <!-- Favicon-->
     <link rel="shortcut icon" href="img/favi.png">
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
@@ -64,7 +64,7 @@ $admin_unread_messages = $admin_unread_row ? (int) $admin_unread_row['n'] : 0;
       <nav id="sidebar">
         <!-- Sidebar Header-->
         <div class="sidebar-header d-flex align-items-center">
-          <div class="avatar d-flex align-items-center justify-content-center"><i class="fa fa-user-circle" style="font-size:3rem;color:#8a8d93;"></i></div>
+          <div class="avatar d-flex align-items-center justify-content-center"><i class="fa fa-user-circle" style="font-size:3rem;color:#db6574;"></i></div>
           <div class="title">
             <h1 class="h5" style="word-break: break-all;"><?php echo e(isset($_SESSION['admin']) ? $_SESSION['admin'] : 'Admin'); ?></h1>
           </div>

@@ -17,7 +17,7 @@ $per_row = (int) $show['seats_per_row'];
 $aisle_after = (int) ceil($per_row / 2);
 $capacity = count($rows) * $per_row;
 $free = $capacity - count($states['booked']) - count($states['held']);
-$class_rgb = ['Economy' => '63, 169, 245', 'Business' => '166, 108, 255', 'First' => '245, 197, 66'];
+$class_rgb = ['Economy' => '63, 169, 245', 'Business' => '166, 108, 255', 'First' => '224, 168, 0'];
 
 include('header.php');
 echo booking_css();
@@ -39,53 +39,53 @@ echo booking_css();
   .sm-steps .is-on b { background: linear-gradient(90deg, #ff55a5, #ff5860); color: #fff; }
   .sm-steps .sm-line { width: 22px; height: 1px; background: rgba(255, 255, 255, .2); }
 
-  .sm-map { background: #26262b; border-radius: 18px; padding: 30px 20px 22px; border: 1px solid rgba(255, 255, 255, .06); box-shadow: 0 10px 40px rgba(0, 0, 0, .35); }
+  .sm-map { background: var(--cx-card); border-radius: 18px; padding: 30px 20px 22px; border: 1px solid var(--cx-line); box-shadow: var(--cx-shadow); }
   .sm-screen { position: relative; max-width: 520px; margin: 0 auto 34px; text-align: center; }
   .sm-screen-arc { height: 26px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; border-top: 5px solid #ff55a5; box-shadow: 0 -18px 30px -14px rgba(255, 85, 165, .9); }
   .sm-screen-glow { position: absolute; left: 8%; right: 8%; top: 6px; height: 60px; background: radial-gradient(ellipse at top, rgba(255, 85, 165, .22), transparent 70%); pointer-events: none; }
-  .sm-screen small { display: block; margin-top: 2px; letter-spacing: 8px; font-size: 11px; color: rgba(255, 255, 255, .45); }
+  .sm-screen small { display: block; margin-top: 2px; letter-spacing: 8px; font-size: 11px; color: var(--cx-muted); }
   .sm-grid { display: flex; flex-direction: column; align-items: center; gap: 7px; min-width: max-content; margin: 0 auto; }
   .sm-scroll { overflow-x: auto; padding-bottom: 6px; }
   .sm-divider { display: flex; align-items: center; gap: 12px; width: 100%; margin: 12px 0 6px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
   .sm-divider::before, .sm-divider::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: .25; }
   .sm-divider:first-child { margin-top: 0; }
   .sm-row { display: flex; align-items: center; gap: 7px; }
-  .sm-rowlabel { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, .55); background: rgba(255, 255, 255, .05); }
+  .sm-rowlabel { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--cx-muted); background: #eef0f5; }
   .sm-aisle { width: 22px; }
-  .sm-page .cx-seat { --rgb: 63, 169, 245; width: 32px; height: 30px; border-radius: 9px 9px 5px 5px; border: 1.5px solid rgba(var(--rgb), .55); background: rgba(var(--rgb), .12); color: rgba(255, 255, 255, .75); font-size: 10px; font-weight: 600; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .22); transition: transform .12s, background .15s, box-shadow .15s, border-color .15s; }
+  .sm-page .cx-seat { --rgb: 63, 169, 245; width: 32px; height: 30px; border-radius: 9px 9px 5px 5px; border: 1.5px solid rgba(var(--rgb), .55); background: rgba(var(--rgb), .10); color: var(--cx-text-soft); font-size: 10px; font-weight: 600; box-shadow: inset 0 -4px 0 rgba(31, 34, 48, .08); transition: transform .12s, background .15s, box-shadow .15s, border-color .15s; }
   .sm-page .cx-seat.c-Business { --rgb: 166, 108, 255; }
-  .sm-page .cx-seat.c-First { --rgb: 245, 197, 66; }
-  .sm-page .cx-seat:hover:not([disabled]):not(.is-selected) { transform: translateY(-3px); border-color: rgb(var(--rgb)); background: rgba(var(--rgb), .25); box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .22), 0 6px 14px rgba(var(--rgb), .35); color: #fff; }
-  .sm-page .cx-seat:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-  .sm-page .cx-seat.is-selected { background: linear-gradient(180deg, #3ee08a, #22b866); border-color: #3ee08a; color: #06311a; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .18), 0 0 16px rgba(46, 204, 113, .55); transform: translateY(-2px); }
+  .sm-page .cx-seat.c-First { --rgb: 224, 168, 0; }
+  .sm-page .cx-seat:hover:not([disabled]):not(.is-selected) { transform: translateY(-3px); border-color: rgb(var(--rgb)); background: rgba(var(--rgb), .22); box-shadow: inset 0 -4px 0 rgba(31, 34, 48, .08), 0 6px 14px rgba(var(--rgb), .3); color: var(--cx-text); }
+  .sm-page .cx-seat:focus-visible { outline: 2px solid var(--cx-pink); outline-offset: 2px; }
+  .sm-page .cx-seat.is-selected { background: linear-gradient(180deg, #3ee08a, #22b866); border-color: #3ee08a; color: #06311a; box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .12), 0 4px 12px rgba(46, 204, 113, .45); transform: translateY(-2px); }
   .sm-page .cx-seat.is-held { background: rgba(255, 159, 28, .85); border-color: #ff9f1c; color: #3a2400; box-shadow: none; }
-  .sm-page .cx-seat.is-booked { background: #3a3a41; border-color: #3a3a41; color: transparent; box-shadow: none; position: relative; }
-  .sm-page .cx-seat.is-booked::after { content: '\00d7'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #6b6b74; font-size: 15px; }
+  .sm-page .cx-seat.is-booked { background: #e3e5ec; border-color: #e3e5ec; color: transparent; box-shadow: none; position: relative; }
+  .sm-page .cx-seat.is-booked::after { content: '\00d7'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #a3a8b8; font-size: 15px; }
   .sm-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 26px; }
-  .sm-legend span { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .07); font-size: 12px; color: rgba(255, 255, 255, .75); }
+  .sm-legend span { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: var(--cx-bg); border: 1px solid var(--cx-line); font-size: 12px; color: var(--cx-text-soft); }
   .sm-legend i { width: 14px; height: 13px; border-radius: 4px 4px 2px 2px; border: 1.5px solid; display: inline-block; }
 
-  .sm-summary { background: #26262b; border-radius: 18px; padding: 22px; border: 1px solid rgba(255, 255, 255, .06); box-shadow: 0 10px 40px rgba(0, 0, 0, .35); position: sticky; top: 100px; }
-  .sm-summary h3 { font-size: 18px; margin: 0 0 4px; color: #fff; }
-  .sm-avail { font-size: 12px; color: rgba(255, 255, 255, .5); margin-bottom: 16px; }
-  .sm-avail b { color: #6ee7a0; }
+  .sm-summary { background: var(--cx-card); border-radius: 18px; padding: 22px; border: 1px solid var(--cx-line); box-shadow: var(--cx-shadow); position: sticky; top: 100px; }
+  .sm-summary h3 { font-size: 18px; margin: 0 0 4px; color: var(--cx-text); }
+  .sm-avail { font-size: 12px; color: var(--cx-muted); margin-bottom: 16px; }
+  .sm-avail b { color: #1b7a46; }
   .sm-seatchips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 34px; margin-bottom: 16px; }
-  .sm-seatchip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; border-radius: 8px; background: rgba(46, 204, 113, .14); border: 1px solid rgba(46, 204, 113, .4); color: #b6f2cf; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .sm-seatchip span { width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, .1); font-size: 12px; }
+  .sm-seatchip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 6px 5px 10px; border-radius: 8px; background: #ecfbf2; border: 1px solid rgba(46, 204, 113, .45); color: #1b7a46; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .sm-seatchip span { width: 18px; height: 18px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; background: rgba(27, 122, 70, .12); font-size: 12px; }
   .sm-seatchip:hover span { background: #ff5860; color: #fff; }
-  .sm-empty { color: rgba(255, 255, 255, .4); font-size: 13px; }
-  .sm-lines { border-top: 1px dashed rgba(255, 255, 255, .12); padding-top: 12px; margin-bottom: 12px; }
-  .sm-line { display: flex; justify-content: space-between; font-size: 14px; color: rgba(255, 255, 255, .7); padding: 3px 0; }
-  .sm-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid rgba(255, 255, 255, .1); padding-top: 12px; margin-bottom: 16px; }
-  .sm-total span { color: rgba(255, 255, 255, .6); }
-  .sm-total strong { font-size: 26px; color: #fff; }
+  .sm-empty { color: var(--cx-muted); font-size: 13px; }
+  .sm-lines { border-top: 1px dashed var(--cx-line); padding-top: 12px; margin-bottom: 12px; }
+  .sm-line { display: flex; justify-content: space-between; font-size: 14px; color: var(--cx-text-soft); padding: 3px 0; }
+  .sm-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--cx-line); padding-top: 12px; margin-bottom: 16px; }
+  .sm-total span { color: var(--cx-muted); }
+  .sm-total strong { font-size: 26px; color: var(--cx-text); }
   .sm-summary .cx-btn { width: 100%; padding: 13px; font-size: 15px; }
-  .sm-hint { font-size: 12px; color: rgba(255, 255, 255, .45); margin: 12px 0 0; display: flex; gap: 6px; }
+  .sm-hint { font-size: 12px; color: var(--cx-muted); margin: 12px 0 0; display: flex; gap: 6px; }
   .sm-count { display: none; }
 
   @media (max-width: 991px) {
     .sm-page { padding-bottom: 110px; }
-    .sm-summary { position: fixed; top: auto; left: 0; right: 0; bottom: 0; z-index: 1030; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(0, 0, 0, .5); padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 14px; background: rgba(30, 30, 35, .97); backdrop-filter: blur(8px); }
+    .sm-summary { position: fixed; top: auto; left: 0; right: 0; bottom: 0; z-index: 1030; border-radius: 16px 16px 0 0; box-shadow: 0 -8px 30px rgba(31, 34, 48, .12); padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 14px; background: rgba(255, 255, 255, .97); backdrop-filter: blur(8px); }
     .sm-summary h3, .sm-avail, .sm-lines, .sm-hint { display: none; }
     .sm-seatchips { grid-column: 1 / -1; min-height: 0; margin: 0; flex-wrap: nowrap; overflow-x: auto; }
     .sm-seatchips:empty { display: none; }
@@ -175,10 +175,10 @@ echo booking_css();
         <div class="sm-legend">
           <span><i style="border-color:rgb(63,169,245);background:rgba(63,169,245,.15)"></i>Economy</span>
           <span><i style="border-color:rgb(166,108,255);background:rgba(166,108,255,.15)"></i>Business</span>
-          <span><i style="border-color:rgb(245,197,66);background:rgba(245,197,66,.15)"></i>First</span>
+          <span><i style="border-color:rgb(224,168,0);background:rgba(224,168,0,.12)"></i>First</span>
           <span><i style="background:#2ecc71;border-color:#2ecc71"></i>Selected</span>
           <span><i style="background:#ff9f1c;border-color:#ff9f1c"></i>On hold</span>
-          <span><i style="background:#3a3a41;border-color:#3a3a41"></i>Booked</span>
+          <span><i style="background:#e3e5ec;border-color:#e3e5ec"></i>Booked</span>
         </div>
       </div>
     </div>

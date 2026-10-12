@@ -149,11 +149,11 @@ include('admin_header.php');
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   if (!window.Chart) return;
-  Chart.defaults.global.defaultFontColor = '#8a8d93';
+  Chart.defaults.global.defaultFontColor = '#6b7084';
   var palette = ['#ff55a5', '#864DD9', '#3fa9f5', '#f5c542', '#2ecc71'];
   var pkr = function (v) { return 'PKR ' + Number(v).toLocaleString('en-US'); };
   var money = { callbacks: { label: function (t, d) { return pkr(d.datasets[t.datasetIndex].data[t.index]); } } };
-  var grid = { color: 'rgba(255,255,255,0.06)' };
+  var grid = { color: 'rgba(31,34,48,0.07)' };
 
   new Chart(document.getElementById('chartRevenue'), {
     type: 'line',

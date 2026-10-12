@@ -59,20 +59,21 @@ echo booking_css();
   .mb-filters label { display: block; font-size: 12px; color: var(--cx-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
   .mb-filters select.cx-input { appearance: auto; }
   .mb-search { position: relative; }
-  .mb-suggest { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: #1f1f23; border: 1px solid var(--cx-line); border-radius: 8px; z-index: 50; overflow: hidden; display: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .5); }
+  .mb-suggest { position: absolute; left: 0; right: 0; top: 100%; margin-top: 4px; background: var(--cx-card); border: 1px solid var(--cx-line); border-radius: 8px; z-index: 50; overflow: hidden; display: none; box-shadow: 0 12px 30px rgba(31, 34, 48, .12); }
   .mb-suggest.is-open { display: block; }
-  .mb-suggest a { display: flex; gap: 10px; align-items: center; padding: 8px 10px; color: #fff; text-decoration: none; }
-  .mb-suggest a:hover, .mb-suggest a.is-active { background: rgba(255, 85, 165, .15); }
+  .mb-suggest a { display: flex; gap: 10px; align-items: center; padding: 8px 10px; color: var(--cx-text); text-decoration: none; }
+  .mb-suggest a:hover, .mb-suggest a.is-active { background: #fff0f7; }
   .mb-suggest img { width: 32px; height: 46px; object-fit: cover; border-radius: 4px; }
   .mb-suggest small { display: block; color: var(--cx-muted); }
-  .mb-card { background: var(--cx-card); border-radius: 10px; overflow: hidden; height: 100%; display: flex; flex-direction: column; box-shadow: 0 5px 25px rgba(0, 0, 0, .3); transition: transform .2s; }
-  .mb-card:hover { transform: translateY(-4px); }
-  .mb-card .mb-poster { position: relative; aspect-ratio: 2 / 3; background: #1a1a1e; }
+  .mb-card { background: var(--cx-card); border-radius: 10px; overflow: hidden; height: 100%; display: flex; flex-direction: column; border: 1px solid var(--cx-line); box-shadow: var(--cx-shadow); transition: transform .2s, box-shadow .2s; }
+  .mb-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(31, 34, 48, .12); }
+  .mb-card .mb-poster { position: relative; aspect-ratio: 2 / 3; background: #e9ebf1; }
   .mb-card .mb-poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .mb-card .mb-flag { position: absolute; left: 10px; top: 10px; }
   .mb-card .mb-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
-  .mb-card h3 { font-size: 16px; margin: 0; color: #fff; font-family: 'Ubuntu', sans-serif; text-transform: uppercase; line-height: 1.3; }
-  .mb-card h3 a { color: #fff; }
+  .mb-card h3 { font-size: 16px; margin: 0; color: var(--cx-text); font-family: 'Ubuntu', sans-serif; text-transform: uppercase; line-height: 1.3; }
+  .mb-card h3 a { color: var(--cx-text); }
+  .mb-card h3 a:hover { color: var(--cx-pink); }
   .mb-card .mb-next { font-size: 12px; color: var(--cx-muted); }
   .mb-card .mb-actions { margin-top: auto; display: flex; gap: 6px; }
   .mb-card .mb-actions .cx-btn { flex: 1; padding: 8px 6px; font-size: 13px; }

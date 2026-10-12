@@ -21,5 +21,5 @@ function swal_page($icon, $title, $redirect)
 {
     return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>CineMax Karachi Admin</title>'
         . '<script src="' . SWAL_CDN . '"></script></head>'
-        . '<body style="background:#22252a;">' . swal_script($icon, $title, $redirect) . '</body></html>';
+        . '<body style="background:#f5f6fa;">' . swal_script($icon, $title, $redirect) . '</body></html>';
 }

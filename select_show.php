@@ -35,7 +35,7 @@ echo booking_css();
         <p class="cx-muted" style="margin-bottom:10px;"><?php echo e($movie['description']); ?></p>
         <?php if ($prices): ?>
           <span class="cx-badge cx-badge-blue">Economy <?php echo money($prices['Economy']); ?></span>
-          <span class="cx-badge" style="background:rgba(166,108,255,.2);color:#d2b8ff;">Business <?php echo money($prices['Business']); ?></span>
+          <span class="cx-badge" style="background:#f3ecff;color:#6b3fc4;">Business <?php echo money($prices['Business']); ?></span>
           <span class="cx-badge cx-badge-orange">First <?php echo money($prices['First']); ?></span>
         <?php endif; ?>
       </div>

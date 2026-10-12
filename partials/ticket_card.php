@@ -5,7 +5,7 @@ $ticket_seats = $ticket['seats']
     : $ticket['user_seat'] . ($ticket['user_price'] ? ' · ' . $ticket['user_price'] : '');
 ?>
 <style>
-  .tk { display: flex; flex-wrap: wrap; background: #fff; color: #222; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 35px rgba(0, 0, 0, .45); position: relative; max-width: 900px; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tk { display: flex; flex-wrap: wrap; background: #fff; color: #222; border-radius: 14px; overflow: hidden; border: 1px solid var(--cx-line); box-shadow: 0 12px 32px rgba(31, 34, 48, .12); position: relative; max-width: 900px; margin: 0 auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .tk-main { flex: 1 1 520px; display: flex; gap: 20px; padding: 24px; min-width: 0; }
   .tk-main img { width: 130px; height: 190px; object-fit: cover; border-radius: 8px; flex: 0 0 auto; }
   .tk-brand { font-size: 11px; letter-spacing: 3px; color: #ff5860; font-weight: 700; margin-bottom: 4px; }
@@ -15,7 +15,7 @@ $ticket_seats = $ticket['seats']
   .tk-grid small { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #888; }
   .tk-grid strong { display: block; font-size: 14px; color: #111; overflow-wrap: anywhere; }
   .tk-stub { flex: 0 0 230px; border-left: 2px dashed #ccc; padding: 24px 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(180deg, #fff5f9, #fff); position: relative; }
-  .tk-stub::before, .tk-stub::after { content: ''; position: absolute; left: -13px; width: 24px; height: 24px; border-radius: 50%; background: #2b2b31; }
+  .tk-stub::before, .tk-stub::after { content: ''; position: absolute; left: -13px; width: 24px; height: 24px; border-radius: 50%; background: var(--cx-bg); }
   .tk-stub::before { top: -12px; }
   .tk-stub::after { bottom: -12px; }
   .tk-qr { background: #fff; padding: 8px; border-radius: 6px; }

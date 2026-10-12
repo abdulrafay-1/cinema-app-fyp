@@ -17,7 +17,7 @@ echo booking_css();
     <div class="text-center" style="margin-bottom:26px;">
       <div style="width:76px;height:76px;border-radius:50%;background:var(--cx-selected);display:inline-flex;align-items:center;justify-content:center;font-size:40px;color:#0b2e1a;margin-bottom:12px;"><i class="fa fa-check"></i></div>
       <h2>Booking confirmed!</h2>
-      <p class="cx-muted">Your e-ticket is ready. You earned <strong style="color:#fff;"><?php echo loyalty_points_for($ticket['total_amount']); ?></strong> loyalty points.</p>
+      <p class="cx-muted">Your e-ticket is ready. You earned <strong style="color:var(--cx-text);"><?php echo loyalty_points_for($ticket['total_amount']); ?></strong> loyalty points.</p>
     </div>
   <?php else: ?>
     <h2 style="margin-bottom:18px;">Your e-ticket</h2>
