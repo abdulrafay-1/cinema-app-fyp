@@ -3,44 +3,55 @@ include('auth.php');
 require_once __DIR__ . '/../includes/admin_functions.php';
 require_once __DIR__ . '/../includes/booking.php';
 
-function check_in_ticket($ref)
+function check_in_ticket($raw)
 {
-    $ref = strtoupper(trim((string) $ref));
+    list($ref, $sig) = parse_ticket_code($raw);
     if ($ref === '') {
         return ['result' => 'NOT_FOUND', 'ref' => $ref];
     }
-    $updated = db_query(
-        "UPDATE booking_details SET status = 'Used', checked_in_at = NOW() WHERE booking_ref = ? AND status = 'Booked'",
-        's',
-        [$ref]
-    );
+    if ($sig !== null && !ticket_signature_ok($ref, $sig)) {
+        log_activity('Rejected ticket with invalid QR signature', $ref);
+        return ['result' => 'FORGED', 'ref' => $ref];
+    }
     $b = load_booking($ref);
     if (!$b) {
         return ['result' => 'NOT_FOUND', 'ref' => $ref];
     }
-    if ($updated === 1) {
-        log_activity('Checked in ticket', $ref);
-        $result = 'VALID';
+    $show_today = !$b['show_date'] || $b['show_date'] === date('Y-m-d');
+    if ($b['status'] === 'Booked' && !$show_today) {
+        $result = 'WRONG_DAY';
     } else {
-        $result = $b['status'] === 'Cancelled' ? 'CANCELLED' : 'ALREADY_USED';
+        $updated = db_query(
+            "UPDATE booking_details SET status = 'Used', checked_in_at = NOW() WHERE booking_ref = ? AND status = 'Booked'",
+            's',
+            [$ref]
+        );
+        $b = load_booking($ref);
+        if ($updated === 1) {
+            log_activity('Checked in ticket', $ref);
+            $result = 'VALID';
+        } else {
+            $result = $b['status'] === 'Cancelled' ? 'CANCELLED' : 'ALREADY_USED';
+        }
     }
     list($date, $time) = booking_when($b);
     return [
         'result' => $result,
         'ref' => $b['booking_ref'],
+        'verified' => $sig !== null,
         'booking' => [
-            'Customer' => $b['user_name'] . ' (' . $b['user_email'] . ')',
             'Movie' => $b['user_movie_name'],
-            'Cinema' => $b['user_movie_cinema'] . ($b['hall_name'] ? ' - ' . $b['hall_name'] : ''),
+            'Cinema' => $b['user_movie_cinema'],
+            'Hall' => $b['hall_name'] ?: '-',
             'Show' => $date . ' at ' . $time,
-            'Seats' => $b['seats'] ? implode(', ', array_column($b['seats'], 'seat_label')) : $b['user_seat'],
+            'Seats' => $b['seats'] ? implode(', ', array_column($b['seats'], 'seat_label')) . ' (' . count($b['seats']) . ')' : $b['user_seat'],
+            'Customer' => $b['user_name'] . ' (' . $b['user_email'] . ')',
             'Snacks' => $b['snacks'] ? implode(', ', array_map(function ($s) { return $s['name'] . ' x' . $s['qty']; }, $b['snacks'])) : 'None',
             'Total' => money($b['total_amount']),
             'Status' => $b['status'],
             'Checked in' => $b['checked_in_at'] ? date('d M Y, g:i A', strtotime($b['checked_in_at'])) : '-',
             'Cancelled' => $b['cancelled_at'] ? date('d M Y, g:i A', strtotime($b['cancelled_at'])) : '-',
         ],
-        'show_today' => !$b['show_date'] || $b['show_date'] === date('Y-m-d'),
     ];
 }
 
@@ -65,6 +76,8 @@ include('admin_header.php');
   .scan-head.ALREADY_USED { background: #fd7e14; }
   .scan-head.CANCELLED { background: #dc3545; }
   .scan-head.NOT_FOUND { background: #6c757d; }
+  .scan-head.FORGED { background: #8b1a1a; }
+  .scan-head.WRONG_DAY { background: #6f42c1; }
   .scan-body table td { padding: 6px 10px; }
 </style>
 <div class="page-content">
@@ -90,7 +103,7 @@ include('admin_header.php');
         <div class="block">
           <div class="title"><strong>Manual entry</strong></div>
           <form id="manual-form" class="form-inline" autocomplete="off">
-            <input type="text" class="form-control mr-2 mb-2" id="manual-ref" placeholder="CNX-2026-00001" style="flex:1;text-transform:uppercase;" required>
+            <input type="text" class="form-control mr-2 mb-2" id="manual-ref" placeholder="CNX-2026-00001 or scanned link" style="flex:1;" required>
             <button type="submit" class="btn btn-secondary mb-2" style="background-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);">Check in</button>
           </form>
         </div>
@@ -108,7 +121,7 @@ include('admin_header.php');
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var labels = { VALID: 'VALID - Entry allowed', ALREADY_USED: 'ALREADY USED', CANCELLED: 'CANCELLED', NOT_FOUND: 'NOT FOUND' };
+  var labels = { VALID: 'VALID - Entry allowed', ALREADY_USED: 'ALREADY USED', CANCELLED: 'CANCELLED', NOT_FOUND: 'NOT FOUND', FORGED: 'NOT GENUINE - QR signature invalid', WRONG_DAY: 'WRONG DAY - Not for today' };
   var lastRef = '', lastAt = 0, busy = false;
 
   function render(data) {
@@ -118,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     head.className = 'scan-head ' + data.result;
     head.textContent = labels[data.result] + (data.ref ? '  ·  ' + data.ref : '');
     table.innerHTML = '';
-    document.getElementById('scan-warn').textContent = data.booking && !data.show_today ? 'Note: this ticket is not for a show today.' : '';
+    document.getElementById('scan-warn').textContent = data.booking ? (data.verified ? 'QR signature verified: this ticket was issued by CineMax.' : 'Reference typed in or old ticket: QR signature not checked.') : ''; document.getElementById('scan-warn').className = 'small px-2 pt-1 ' + (data.verified ? 'text-success' : 'text-warning');
     if (data.booking) {
       Object.keys(data.booking).forEach(function (k) {
         var tr = table.insertRow();
@@ -130,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function check(ref) {
-    ref = (ref || '').trim().toUpperCase();
+    ref = (ref || '').trim();
     if (!ref || busy) return;
     if (ref === lastRef && Date.now() - lastAt < 4000) return;
     lastRef = ref; lastAt = Date.now(); busy = true;

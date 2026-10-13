@@ -139,6 +139,8 @@ Migration 001 added columns, so INSERTs without a column list now fail with "Col
     - **Admin:** light overrides live in `Admin/css/custom.css` (loaded after `style.default.css`, which is untouched). Card titles, tables, forms, sidebar, navbar and modals are covered there; avoid inline dark colours (`#2d3035`, `#fff` text) in new admin pages.
     - Both stylesheet links carry a `?v=<filemtime>` so browsers pick up CSS edits without a hard refresh.
     - Left dark on purpose: photo/backdrop banners (home slider, seat-map film banner, trailer) and the camera box on Scan Ticket.
+17. **Signed QR tickets (Rafay).** The ticket QR is now a link `verify.php?ref=...&sig=...`; `sig` is an HMAC of the booking ref with `ticket_secret` from `includes/secrets.php` (pull to get it, or set env `TICKET_SECRET`). Any phone camera opens the new public `verify.php` (Genuine / Already used / Cancelled / Show date has passed / Not valid; name masked, no email). The admin scanner now also refuses forged codes (FORGED, logged) and genuine tickets for another day (WRONG_DAY, ticket stays Booked); typed refs still work. Details in `database/SCHEMA_CONTRACT.md` (Booking reference, Check-in).
+    - **Request for Umair:** `VIVA_PREP.md` question 18 still says the QR contains only the reference. Suggested answer: "The QR holds a link with the booking reference and an HMAC signature made with a secret key only our server has. Any phone can open it to see if the ticket is genuine; the admin scanner checks the signature, refuses forged codes and tickets for another day, and checks in a valid ticket once."
 
 ### For Rafay
 No changes needed, just FYI from Umair Task 1:

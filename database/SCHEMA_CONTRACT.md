@@ -65,7 +65,7 @@ Foreign keys on `shows` mean **a movie or cinema that has shows cannot be delete
 
 **Seat holds.** Selecting seats creates `seat_holds` rows that expire 5 minutes later. Expired holds count as free and get deleted on read. The UNIQUE keys on `seat_holds` and `booking_seats` are what prevent double booking.
 
-**Booking reference.** `CNX-YYYY-00001`: year + booking_id padded to 5 digits (`generate_booking_ref($booking_id)`), set right after the insert, in the same transaction. The ticket QR code contains **only** the booking_ref.
+**Booking reference.** `CNX-YYYY-00001`: year + booking_id padded to 5 digits (`generate_booking_ref($booking_id)`), set right after the insert, in the same transaction. The ticket QR code holds a link `verify.php?ref=<booking_ref>&sig=<sig>`, where `sig` = first 24 hex characters of HMAC-SHA256(booking_ref, `ticket_secret`) (`ticket_signature()` in `includes/booking.php`; secret in `includes/secrets.php` or env `TICKET_SECRET`). No personal data goes in the QR. Changing `ticket_secret` invalidates the QR on every ticket already issued.
 
 **Refund policy.** Cancelled 24h or more before show start = 100% refund; less than 24h = 50%. Shows that already started can't be cancelled. On cancel: `status='Cancelled'`, `refund_status='Pending'`, `refund_amount` set, `cancelled_at=NOW()`, its `booking_seats` rows deleted (seats released). An admin then sets `refund_status` to `Refunded` or `Rejected`.
 
@@ -73,7 +73,7 @@ Foreign keys on `shows` mean **a movie or cinema that has shows cannot be delete
 
 **Loyalty.** 1 point per PKR 100 of `total_amount` (`floor(total/100)`), added on booking, removed on cancel (never below 0).
 
-**Check-in.** The scanner looks up a booking_ref: if `Booked`, it sets `status='Used'`, `checked_in_at=NOW()`. `Cancelled` and `Used` tickets are invalid.
+**Check-in.** The scanner reads the QR link (or a typed booking_ref). A link whose `sig` does not match is refused as FORGED and logged. A `Booked` ticket for a show on another day is refused as WRONG_DAY and stays `Booked`. Otherwise, if `Booked`, it sets `status='Used'`, `checked_in_at=NOW()`. `Cancelled` and `Used` tickets are invalid. `verify.php` is the public, read-only check anyone can open by scanning the QR.
 
 **Users.** `status='Blocked'` users can't log in. Session keys: `ux` (name), `ux_email`, `ux_id`. Admin: `admin` (email).
 

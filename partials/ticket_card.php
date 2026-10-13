@@ -63,9 +63,9 @@ $ticket_seats = $ticket['seats']
     </div>
   </div>
   <div class="tk-stub">
-    <div class="tk-qr" id="ticket-qr" data-ref="<?php echo e($ticket['booking_ref']); ?>"></div>
+    <div class="tk-qr" id="ticket-qr" data-code="<?php echo e(ticket_verify_url($ticket['booking_ref'])); ?>"></div>
     <div class="tk-ref"><?php echo e($ticket['booking_ref']); ?></div>
-    <div style="font-size:11px;color:#888;text-align:center;">Show this QR code at the cinema entrance</div>
+    <div style="font-size:11px;color:#888;text-align:center;">Show this QR code at the entrance. Scan it with any phone to verify the ticket.</div>
   </div>
   <?php if ($ticket['status'] !== 'Booked'): ?>
     <div class="tk-stamp <?php echo e($ticket['status']); ?>"><?php echo e(strtoupper($ticket['status'])); ?></div>
@@ -75,6 +75,6 @@ $ticket_seats = $ticket['seats']
 <script>
   (function () {
     var box = document.getElementById('ticket-qr');
-    new QRCode(box, { text: box.dataset.ref, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.M });
+    new QRCode(box, { text: box.dataset.code, width: 170, height: 170, correctLevel: QRCode.CorrectLevel.M });
   })();
 </script>

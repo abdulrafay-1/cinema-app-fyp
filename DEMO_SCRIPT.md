@@ -76,7 +76,8 @@ Open the site at **http://localhost:8080**. The camera scanner only works on `ht
 
 ## 9. Scan tickets
 1. **Scan** button → **Start camera** → allow camera.
-2. Show the ticket QR (customer's ticket page on a phone, or the printed PDF) → green **VALID - Entry allowed** with booking details.
+2. Show the ticket QR (customer's ticket page on a phone, or the printed PDF) → green **VALID - Entry allowed** with booking details and "QR signature verified".
+   - Scan the same QR with any phone camera instead: it opens `verify.php`, showing **Genuine ticket** with movie, hall, time and seats (name masked). Change one character of `sig` in the link → **Not a valid CineMax ticket**. On the deployed site this works from any phone; on `localhost` only the computer itself can open the link.
 3. Scan it again → orange **ALREADY USED**. The customer's ticket now has a **USED** stamp.
 4. Manual entry: type the cancelled booking's ref → red **CANCELLED**. Type `CNX-0000-00000` → grey **NOT FOUND**.
 

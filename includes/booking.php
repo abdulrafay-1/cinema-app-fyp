@@ -415,6 +415,58 @@ function load_booking($ref)
     return $booking;
 }
 
+function ticket_secret()
+{
+    static $key = null;
+    if ($key === null) {
+        $key = (string) getenv('TICKET_SECRET');
+        if ($key === '' && is_file(__DIR__ . '/secrets.php')) {
+            $secrets = require __DIR__ . '/secrets.php';
+            $key = is_array($secrets) ? (string) ($secrets['ticket_secret'] ?? '') : '';
+        }
+        if (strlen($key) < 32) {
+            throw new RuntimeException('Set a ticket_secret of at least 32 characters in includes/secrets.php (or the TICKET_SECRET env var).');
+        }
+    }
+    return $key;
+}
+
+function ticket_signature($ref)
+{
+    return substr(hash_hmac('sha256', strtoupper(trim((string) $ref)), ticket_secret()), 0, 24);
+}
+
+function ticket_signature_ok($ref, $sig)
+{
+    return is_string($sig) && $sig !== '' && hash_equals(ticket_signature($ref), strtolower($sig));
+}
+
+function ticket_verify_url($ref)
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
+    $dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+    return ($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $dir
+        . '/verify.php?ref=' . rawurlencode($ref) . '&sig=' . ticket_signature($ref);
+}
+
+function parse_ticket_code($raw)
+{
+    $raw = trim((string) $raw);
+    if (preg_match('/[?&]ref=([A-Za-z0-9-]+)/', $raw, $ref)) {
+        $sig = preg_match('/[?&]sig=([0-9a-fA-F]+)/', $raw, $m) ? $m[1] : '';
+        return [strtoupper($ref[1]), $sig];
+    }
+    return [strtoupper($raw), null];
+}
+
+function mask_name($name)
+{
+    $parts = preg_split('/\s+/', trim((string) $name), -1, PREG_SPLIT_NO_EMPTY);
+    return implode(' ', array_map(function ($p) {
+        return mb_substr($p, 0, 1) . str_repeat('*', max(2, mb_strlen($p) - 1));
+    }, $parts));
+}
+
 function owns_booking($booking)
 {
     $user_id = current_user_id();
